@@ -39,8 +39,8 @@ public class MainController extends Controller
     double xOffset;
     double yOffset;
     boolean stageDragging = false;
-    Stage fullScreenStage;
-    Stage mainStage;
+    // Stage fullScreenStage;
+    // Stage mainStage;
     @FXML
     private Button tagBtnMainView;
     @FXML
@@ -144,7 +144,8 @@ public class MainController extends Controller
     void handleBtnSettings( ActionEvent event )
     {
         //todo:
-        showFullScreenView();
+        // showFullScreenView();
+        controllerManager.showView( ControllerManager.View.FULLSCREEN );
     }
 
     @FXML
@@ -171,24 +172,16 @@ public class MainController extends Controller
         {
             ctrlView.setVisible( true );
             mainView.setVisible( false );
-            if( fullScreenStage != null )
-            {
-                fullScreenStage.hide();
-            }
-            if( mainStage != null )
-            {
-                mainStage.show();
-            }
+            controllerManager.showView( ControllerManager.View.MAIN );
         }
     }
 
     @FXML
     void handleMouseEnteredMainView( MouseEvent event )
     {
+        // todo
         System.out.println( "Entered To Main" );
-//        setInvisible();
         System.out.println( paneParent.getBoundsInParent().toString() );
-//        event.get
     }
 
     @FXML
@@ -200,9 +193,8 @@ public class MainController extends Controller
     @FXML
     void handleMouseExitedMainView( MouseEvent event )
     {
+        // todo
         System.out.println( "Exitted From Main" );
-//        parentPane.setOpacity( 1 );
-
     }
 
     private void handleOnFullScreenViewHiding()
@@ -218,27 +210,10 @@ public class MainController extends Controller
     @FXML
     void handleOnMouseDraggedBtnCtrlCtrlView( MouseEvent event )
     {
-//        stageDraggingOnDragged( event );
-//        stageDragging = true;
-        Stage mainStage = ( Stage ) paneParent.getScene().getWindow();
-////        stage.setX( event.getScreenX() + xOffset );
-////        stage.setY( event.getScreenY() + yOffset );
-//        stage.setWidth( stage.getWidth() + xOffset );
-        double newX = event.getScreenX() - mainStage.getX();// + 13;
-        double newY = event.getScreenY() - mainStage.getY();// + 10;
-//        if (newX % 5 == 0 || newY % 5 == 0) {
+        double newX = event.getScreenX() - getStage().getX();
+
         if( newX < 720 && newX > 100 )
-            mainStage.setWidth( newX );
-//            } else {
-//                stage.setWidth(550);
-//            }
-//
-//            if (newY > 200) {
-//                stage.setHeight(newY);
-//            } else {
-//                stage.setHeight(200);
-//            }
-//        }
+            getStage().setWidth( newX );
     }
 
     @FXML
@@ -282,57 +257,7 @@ public class MainController extends Controller
         stageDraggingOnReleased();
     }
 
-    private void initFullScreenView() throws IOException
-    {
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource( "/com/github/tharindusathis/jomodoro/view/full-screen-view.fxml" ) );
-
-        Region contentRootRegion = loader.load();
-
-        double origW = 1920;
-        double origH = 1080;
-
-        contentRootRegion.setPrefWidth( origW );
-        contentRootRegion.setPrefHeight( origH );
-
-        Group group = new Group( contentRootRegion );
-        StackPane rootPane = new StackPane();
-        rootPane.getChildren().add( group );
-
-        rootPane.setStyle( "-fx-background-color: #00000000" );
-
-        Scene scene = new Scene( rootPane, origW, origH );
-
-        DoubleBinding width = scene.widthProperty().divide( origW );
-        group.scaleXProperty().bind( width );
-        group.scaleYProperty().bind( width );
-        fullScreenStage = new Stage();
-        fullScreenStage.initStyle( StageStyle.TRANSPARENT );
-        scene.setFill( Color.TRANSPARENT );
-        fullScreenStage.setScene( scene );
-        fullScreenStage.setAlwaysOnTop( true );
-        fullScreenStage.setWidth( fullScreenStage.getWidth() * 0.5 );
-        fullScreenStage.setOnHiding( event ->
-        {
-            handleOnFullScreenViewHiding();
-        } );
-        fullScreenStage.setOnShowing( event ->
-        {
-            handleOnFullScreenViewShowing();
-        } );
-
-        FullScreenController fullScreenController = loader.getController();
-//        fullScreenController.setMainController( this );
-
-        fullScreenStage.show();
-//        fullScreenStage.setMaximized( true );
-//        group.scaleXProperty().unbind();
-//        group.scaleYProperty().unbind();
-//        fullScreenStage.setWidth( 1920 );
-    }
-
     @FXML
-        // This method is called by the FXMLLoader when initialization is complete
     void initialize()
     {
         running = false;
@@ -356,9 +281,6 @@ public class MainController extends Controller
         };
         btnCtrlCtrlView.hoverProperty().addListener( ctrlViewVisualizer );
         gridPaneCtrlBtnArea.hoverProperty().addListener( ctrlViewVisualizer );
-
-        //init variables
-
     }
 
     void pauseTimer()
@@ -442,42 +364,19 @@ public class MainController extends Controller
         ctrlView.setVisible( false );
     }
 
-    private void showFullScreenView()
-    {
-        if( fullScreenStage == null )
-        {
-            try
-            {
-                initFullScreenView();
-            }
-            catch( IOException e )
-            {
-                e.printStackTrace();
-            }
-        }
-        fullScreenStage.show();
-    }
-
     void stageDraggingOnDragged( MouseEvent event )
     {
         stageDragging = true;
-        if( mainStage == null )
-        {
-            mainStage = ( Stage ) paneParent.getScene().getWindow();
-        }
-        mainStage.setX( event.getScreenX() + xOffset );
-        mainStage.setY( event.getScreenY() + yOffset );
+
+        getStage().setX( event.getScreenX() + xOffset );
+        getStage().setY( event.getScreenY() + yOffset );
     }
 
     void stageDraggingOnPressed( MouseEvent event )
     {
         stageDragging = true;
-        if( mainStage == null )
-        {
-            mainStage = ( Stage ) paneParent.getScene().getWindow();
-        }
-        xOffset = mainStage.getX() - event.getScreenX();
-        yOffset = mainStage.getY() - event.getScreenY();
+        xOffset = getStage().getX() - event.getScreenX();
+        yOffset = getStage().getY() - event.getScreenY();
     }
 
     void stageDraggingOnReleased()

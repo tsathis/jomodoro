@@ -1,33 +1,51 @@
 package com.github.tharindusathis.jomodoro.controller;
 
+import javafx.stage.Stage;
+
+import java.util.EnumMap;
+import java.util.Map;
+
 public class ControllerManager
 {
-    private final MainController mainController;
-    private final FullScreenController fullScreenController;
-    private final TrayMenuController trayMenuController;
+    private Map<View,Controller> controllersMap;
 
-    public ControllerManager(
-            MainController mainController,
-            FullScreenController fullScreenController,
-            TrayMenuController trayMenuController )
+    public Controller getController( View view )
     {
-        this.mainController = mainController;
-        this.fullScreenController = fullScreenController;
-        this.trayMenuController = trayMenuController;
+        if( controllersMap == null ) return null;
+        return controllersMap.get( view );
     }
 
-    public FullScreenController getFullScreenController()
+    public void registerController( View view, Controller controller, Stage stage )
     {
-        return fullScreenController;
+        if( controllersMap == null )
+        {
+            controllersMap = new EnumMap<>( View.class );
+        }
+        if( controllersMap.containsKey( view ) ) return;
+        controller.setStage( stage );
+        controller.setControllerManager( this );
+        controllersMap.put( view, controller );
     }
 
-    public MainController getMainController()
+    public void showView( View view )
     {
-        return mainController;
+        controllersMap.forEach( ( v, controller ) ->
+        {
+            if( v == view )
+            {
+                controller.getStage().show();
+            }
+            else
+            {
+                controller.getStage().hide();
+            }
+        } );
     }
 
-    public TrayMenuController getTrayMenuController()
+    public enum View
     {
-        return trayMenuController;
+        MAIN,
+        FULLSCREEN,
+        TRAY_MENU;
     }
 }

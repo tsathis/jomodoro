@@ -11,9 +11,6 @@ import javafx.stage.Stage;
 
 public class FullScreenController extends Controller
 {
-
-    Stage stageFullScreenView;
-//    MainController mainController;
     @FXML
     private AnchorPane paneParent;
     @FXML
@@ -44,12 +41,8 @@ public class FullScreenController extends Controller
     @FXML
     void btnCloseOnAction( ActionEvent event )
     {
-        if( stageFullScreenView == null )
-        {
-            stageFullScreenView = ( Stage ) paneParent.getScene().getWindow();
-        }
-        stageFullScreenView.close();
-
+        //todo
+        getStage().close();
     }
 
     @FXML
@@ -80,18 +73,15 @@ public class FullScreenController extends Controller
     @FXML
     void btnStartOnAction( ActionEvent event )
     {
-        final MainController mainController = controllerManager.getMainController();
+        final MainController mainController = (MainController) controllerManager.getController( ControllerManager.View.MAIN );
         mainController.setDefaultTimerDuration( Integer.parseInt( txtTime.getText() ) * 60 );
         mainController.setBreakTimerDuration( Integer.parseInt( txtBreak.getText() ) * 60 );
         mainController.resetTimer();
         mainController.startTimer();
         mainController.setTagLabel( txtLabel.getText() );
 
-        if( stageFullScreenView == null )
-        {
-            stageFullScreenView = ( Stage ) paneParent.getScene().getWindow();
-        }
-        stageFullScreenView.close();
+        //todo
+        getStage().close();
     }
 
     private void changeDurationValue( TextField textField, int i )
@@ -114,7 +104,6 @@ public class FullScreenController extends Controller
     }
 
     @FXML
-        // This method is called by the FXMLLoader when initialization is complete
     void initialize()
     {
         txtTime.textProperty().addListener( ( observable, oldValue, newValue ) ->

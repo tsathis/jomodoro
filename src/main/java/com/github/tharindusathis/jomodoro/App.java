@@ -3,7 +3,6 @@ package com.github.tharindusathis.jomodoro;
 import com.github.tharindusathis.jomodoro.controller.ControllerManager;
 import com.github.tharindusathis.jomodoro.controller.FullScreenController;
 import com.github.tharindusathis.jomodoro.controller.MainController;
-import com.github.tharindusathis.jomodoro.controller.TrayMenuController;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXMLLoader;
@@ -111,26 +110,23 @@ public class App extends Application
     public void start( Stage stage )
     {
         MainController mainController = null;
-        FullScreenController fullScreenController = null;
+        FullScreenController fullscreenController = null;
         try
         {
             mainController = createMainView();
-            fullScreenController = createFullscreenView();
+            fullscreenController = createFullscreenView();
         }
         catch( IOException e )
         {
             e.printStackTrace();
         }
 
-        controllerManager = new ControllerManager(
-                mainController, fullScreenController, new TrayMenuController()
-        );
-
-
-        mainController.setControllerManager( controllerManager );
-        fullScreenController.setControllerManager( controllerManager );
+        controllerManager = new ControllerManager();
+        controllerManager.registerController(
+                ControllerManager.View.MAIN, mainController, mainViewStage );
+        controllerManager.registerController(
+                ControllerManager.View.FULLSCREEN, fullscreenController, fullScreenViewStage );
 
         mainViewStage.show();
     }
-
 }
