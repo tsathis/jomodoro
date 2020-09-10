@@ -1,181 +1,223 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="paneParent" prefHeight="654.0" prefWidth="957.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.tharindusathis.jomodoro.controller.FullScreenController">
+<AnchorPane fx:id="paneParent" prefHeight="654.0" prefWidth="957.0" style="-fx-min-height: 1080; -fx-max-height: 1080;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.tharindusathis.jomodoro.controller.FullScreenController">
    <children>
-      <BorderPane prefHeight="467.0" prefWidth="686.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <center>
-            <VBox alignment="CENTER" prefHeight="513.0" prefWidth="749.0" spacing="30.0" BorderPane.alignment="CENTER">
-               <children>
-                  <HBox alignment="CENTER" spacing="30.0">
+      <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <BorderPane fx:id="startViewPane" prefHeight="467.0" prefWidth="686.0">
+               <center>
+                  <VBox alignment="CENTER" prefHeight="513.0" prefWidth="749.0" spacing="30.0" BorderPane.alignment="CENTER">
                      <children>
-                        <BorderPane fx:id="txtTimeContainer" prefHeight="200.0" prefWidth="200.0" stylesheets="@../styles/style-fullscreen.css">
-                           <right>
-                              <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="spinner-bg" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER_RIGHT">
-                                 <bottom>
-                                    <Button fx:id="btnSpinnerTimeDown" mnemonicParsing="false" onAction="#btnSpinnerTimeDownOnAction" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
-                                       <styleClass>
-                                          <String fx:value="spinner-btn" />
-                                          <String fx:value="spinner-btn-down" />
-                                       </styleClass>
-                                    </Button>
-                                 </bottom>
-                                 <top>
-                                    <Button fx:id="btnSpinnerTimeUp" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="72.0" maxWidth="83.0" mnemonicParsing="false" onAction="#btnSpinnerTimeUpOnAction" prefHeight="72.0" prefWidth="83.0" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
-                                       <styleClass>
-                                          <String fx:value="spinner-btn" />
-                                          <String fx:value="spinner-btn-up" />
-                                       </styleClass>
-                                    </Button>
-                                 </top>
-                                 <BorderPane.margin>
-                                    <Insets right="-2.0" />
-                                 </BorderPane.margin>
-                              </BorderPane>
-                           </right>
-                           <styleClass>
-                              <String fx:value="txt-input-bg" />
-                              <String fx:value="txt-input-small" />
-                           </styleClass>
-                           <center>
-                              <TextField fx:id="txtTime" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0" styleClass="txt-input" stylesheets="@../styles/style-fullscreen.css" text="999" BorderPane.alignment="CENTER">
-                                 <BorderPane.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </BorderPane.margin>
-                                 <font>
-                                    <Font name="Webdings" size="17.0" />
-                                 </font>
-                              </TextField>
-                           </center>
-                           <left>
-                              <Pane styleClass="txt-input-graphic" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
-                                 <children>
-                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../icons/txt-graphic-time.png" />
-                                       </image>
-                                    </ImageView>
-                                 </children>
-                                 <BorderPane.margin>
-                                    <Insets bottom="20.0" left="20.0" top="20.0" />
-                                 </BorderPane.margin>
-                              </Pane>
-                           </left>
-                        </BorderPane>
-                        <BorderPane fx:id="txtBreakContainer" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" stylesheets="@../styles/style-fullscreen.css">
-                           <right>
-                              <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="spinner-bg" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER_RIGHT">
-                                 <bottom>
-                                    <Button fx:id="btnSpinnerBreakDown" mnemonicParsing="false" onAction="#btnSpinnerBreakDownOnAction" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
-                                       <styleClass>
-                                          <String fx:value="spinner-btn" />
-                                          <String fx:value="spinner-btn-down" />
-                                       </styleClass>
-                                    </Button>
-                                 </bottom>
-                                 <top>
-                                    <Button fx:id="btnSpinnerBreakUp" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="72.0" maxWidth="83.0" mnemonicParsing="false" onAction="#btnSpinnerBreakUpOnAction" prefHeight="72.0" prefWidth="83.0" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
-                                       <styleClass>
-                                          <String fx:value="spinner-btn" />
-                                          <String fx:value="spinner-btn-up" />
-                                       </styleClass>
-                                    </Button>
-                                 </top>
-                                 <BorderPane.margin>
-                                    <Insets right="-2.0" />
-                                 </BorderPane.margin>
-                              </BorderPane>
-                           </right>
-                           <styleClass>
-                              <String fx:value="txt-input-bg" />
-                              <String fx:value="txt-input-small" />
-                           </styleClass>
-                           <center>
-                              <TextField fx:id="txtBreak" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0" styleClass="txt-input" stylesheets="@../styles/style-fullscreen.css" text="999" BorderPane.alignment="CENTER">
-                                 <BorderPane.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </BorderPane.margin>
-                                 <font>
-                                    <Font name="Webdings" size="17.0" />
-                                 </font>
-                              </TextField>
-                           </center>
-                           <left>
-                              <Pane styleClass="txt-input-graphic" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
-                                 <BorderPane.margin>
-                                    <Insets bottom="20.0" left="20.0" top="20.0" />
-                                 </BorderPane.margin>
-                                 <children>
-                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../icons/txt-graphic-break.png" />
-                                       </image>
-                                    </ImageView>
-                                 </children>
-                              </Pane>
-                           </left>
-                        </BorderPane>
-                     </children>
-                  </HBox>
-                  <BorderPane fx:id="txtLabelContainer" prefHeight="200.0" prefWidth="200.0" stylesheets="@../styles/style-fullscreen.css">
-                     <styleClass>
-                        <String fx:value="txt-input-bg" />
-                        <String fx:value="txt-input-large" />
-                     </styleClass>
-                     <center>
-                        <TextField fx:id="txtLabel" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0" promptText="task label..." styleClass="txt-input" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
-                           <BorderPane.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </BorderPane.margin>
-                           <font>
-                              <Font name="Webdings" size="17.0" />
-                           </font>
-                        </TextField>
-                     </center>
-                     <left>
-                        <Pane styleClass="txt-input-graphic" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
-                           <BorderPane.margin>
-                              <Insets bottom="20.0" left="20.0" top="20.0" />
-                           </BorderPane.margin>
+                        <HBox alignment="CENTER" spacing="30.0">
                            <children>
-                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/txt-graphic-tag.png" />
-                                 </image>
-                              </ImageView>
+                              <BorderPane fx:id="txtTimeContainer" prefHeight="200.0" prefWidth="200.0" stylesheets="@../styles/style-fullscreen.css">
+                                 <right>
+                                    <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="spinner-bg" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER_RIGHT">
+                                       <bottom>
+                                          <Button fx:id="btnSpinnerTimeDown" mnemonicParsing="false" onAction="#btnSpinnerTimeDownOnAction" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
+                                             <styleClass>
+                                                <String fx:value="spinner-btn" />
+                                                <String fx:value="spinner-btn-down" />
+                                             </styleClass>
+                                          </Button>
+                                       </bottom>
+                                       <top>
+                                          <Button fx:id="btnSpinnerTimeUp" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="72.0" maxWidth="83.0" mnemonicParsing="false" onAction="#btnSpinnerTimeUpOnAction" prefHeight="72.0" prefWidth="83.0" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
+                                             <styleClass>
+                                                <String fx:value="spinner-btn" />
+                                                <String fx:value="spinner-btn-up" />
+                                             </styleClass>
+                                          </Button>
+                                       </top>
+                                       <BorderPane.margin>
+                                          <Insets right="-2.0" />
+                                       </BorderPane.margin>
+                                    </BorderPane>
+                                 </right>
+                                 <styleClass>
+                                    <String fx:value="txt-input-bg" />
+                                    <String fx:value="txt-input-small" />
+                                 </styleClass>
+                                 <center>
+                                    <TextField fx:id="txtTime" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0" styleClass="txt-input" stylesheets="@../styles/style-fullscreen.css" text="999" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </BorderPane.margin>
+                                       <font>
+                                          <Font name="Webdings" size="17.0" />
+                                       </font>
+                                    </TextField>
+                                 </center>
+                                 <left>
+                                    <Pane styleClass="txt-input-graphic" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/txt-graphic-time.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                       <BorderPane.margin>
+                                          <Insets bottom="20.0" left="20.0" top="20.0" />
+                                       </BorderPane.margin>
+                                    </Pane>
+                                 </left>
+                              </BorderPane>
+                              <BorderPane fx:id="txtBreakContainer" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" stylesheets="@../styles/style-fullscreen.css">
+                                 <right>
+                                    <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="spinner-bg" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER_RIGHT">
+                                       <bottom>
+                                          <Button fx:id="btnSpinnerBreakDown" mnemonicParsing="false" onAction="#btnSpinnerBreakDownOnAction" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
+                                             <styleClass>
+                                                <String fx:value="spinner-btn" />
+                                                <String fx:value="spinner-btn-down" />
+                                             </styleClass>
+                                          </Button>
+                                       </bottom>
+                                       <top>
+                                          <Button fx:id="btnSpinnerBreakUp" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="72.0" maxWidth="83.0" mnemonicParsing="false" onAction="#btnSpinnerBreakUpOnAction" prefHeight="72.0" prefWidth="83.0" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
+                                             <styleClass>
+                                                <String fx:value="spinner-btn" />
+                                                <String fx:value="spinner-btn-up" />
+                                             </styleClass>
+                                          </Button>
+                                       </top>
+                                       <BorderPane.margin>
+                                          <Insets right="-2.0" />
+                                       </BorderPane.margin>
+                                    </BorderPane>
+                                 </right>
+                                 <styleClass>
+                                    <String fx:value="txt-input-bg" />
+                                    <String fx:value="txt-input-small" />
+                                 </styleClass>
+                                 <center>
+                                    <TextField fx:id="txtBreak" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0" styleClass="txt-input" stylesheets="@../styles/style-fullscreen.css" text="999" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </BorderPane.margin>
+                                       <font>
+                                          <Font name="Webdings" size="17.0" />
+                                       </font>
+                                    </TextField>
+                                 </center>
+                                 <left>
+                                    <Pane styleClass="txt-input-graphic" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets bottom="20.0" left="20.0" top="20.0" />
+                                       </BorderPane.margin>
+                                       <children>
+                                          <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/txt-graphic-break.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </Pane>
+                                 </left>
+                              </BorderPane>
                            </children>
-                        </Pane>
-                     </left>
-                  </BorderPane>
-                  <HBox alignment="CENTER" spacing="20.0">
-                     <VBox.margin>
-                        <Insets top="70.0" />
-                     </VBox.margin>
-                     <children>
-                        <Button fx:id="btnClose" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#btnCloseOnAction" styleClass="btn-x-fullscreen" stylesheets="@../styles/style-fullscreen.css" text="X" textAlignment="CENTER">
-                           <font>
-                              <Font name="Cambria Bold" size="12.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="btnStart" layoutX="280.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnStartOnAction" styleClass="btn-start-fullscreen" stylesheets="@../styles/style-fullscreen.css" text="Start" />
+                        </HBox>
+                        <BorderPane fx:id="txtLabelContainer" prefHeight="200.0" prefWidth="200.0" stylesheets="@../styles/style-fullscreen.css">
+                           <styleClass>
+                              <String fx:value="txt-input-bg" />
+                              <String fx:value="txt-input-large" />
+                           </styleClass>
+                           <center>
+                              <TextField fx:id="txtLabel" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0" promptText="task label..." styleClass="txt-input" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
+                                 <BorderPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </BorderPane.margin>
+                                 <font>
+                                    <Font name="Webdings" size="17.0" />
+                                 </font>
+                              </TextField>
+                           </center>
+                           <left>
+                              <Pane styleClass="txt-input-graphic" stylesheets="@../styles/style-fullscreen.css" BorderPane.alignment="CENTER">
+                                 <BorderPane.margin>
+                                    <Insets bottom="20.0" left="20.0" top="20.0" />
+                                 </BorderPane.margin>
+                                 <children>
+                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/txt-graphic-tag.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </Pane>
+                           </left>
+                        </BorderPane>
+                        <HBox alignment="CENTER" spacing="20.0">
+                           <VBox.margin>
+                              <Insets top="70.0" />
+                           </VBox.margin>
+                           <children>
+                              <Button fx:id="btnClose" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#btnCloseOnAction" styleClass="btn-x-fullscreen" stylesheets="@../styles/style-fullscreen.css" text="X" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Cambria Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="btnStart" layoutX="280.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnStartOnAction" styleClass="btn-start-fullscreen" stylesheets="@../styles/style-fullscreen.css" text="Start" />
+                           </children>
+                        </HBox>
                      </children>
-                  </HBox>
-               </children>
-            </VBox>
-         </center>
-      </BorderPane>
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                  </VBox>
+               </center>
+            </BorderPane>
+            <BorderPane fx:id="breakViewPane" layoutX="10.0" layoutY="10.0" prefHeight="467.0" prefWidth="686.0">
+               <center>
+                  <VBox alignment="CENTER" prefHeight="513.0" prefWidth="749.0" spacing="30.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <HBox alignment="CENTER" spacing="30.0">
+                           <children>
+                              <Pane cacheShape="false" prefHeight="200.0" prefWidth="200.0" styleClass="break-ghaphic" stylesheets="@../styles/style-fullscreen.css" />
+                              <VBox>
+                                 <children>
+                                    <Label fx:id="lblTimer" styleClass="lbl-timer" stylesheets="@../styles/style-fullscreen.css" text="00:00">
+                                       <font>
+                                          <Font name="Webdings" size="180.0" />
+                                       </font>
+                                    </Label>
+                                    <ProgressBar fx:id="breakProgressBar" prefHeight="18.0" prefWidth="456.0" progress="0.0" />
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets bottom="40.0" left="20.0" />
+                                 </HBox.margin>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="20.0">
+                           <VBox.margin>
+                              <Insets top="70.0" />
+                           </VBox.margin>
+                           <children>
+                              <Button fx:id="btnClose1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#btnCloseOnAction" styleClass="btn-x-fullscreen" stylesheets="@../styles/style-fullscreen.css" text="X" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Cambria Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="btnFinishBreak" layoutX="280.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleBtnFinishBreak" styleClass="btn-start-fullscreen" stylesheets="@../styles/style-fullscreen.css" text="Finish" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                  </VBox>
+               </center>
+            </BorderPane>
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>

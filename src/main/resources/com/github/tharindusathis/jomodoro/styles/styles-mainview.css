@@ -1,3 +1,13 @@
+.main-window-container{
+    -fx-max-width: 1440;
+    -fx-max-height: 1080;
+    -fx-min-width: 1440;
+    -fx-min-height: 1080;
+    -fx-background-color: rgba(250, 26, 26, 0.0);
+    -fx-border-color: rgba(254, 254, 254, 1.01);
+    -fx-border-width: 360px;
+    /*-fx-border-insets: -40px;*/
+}
 
 .main-window{
     -fx-max-width: 720;
@@ -226,6 +236,69 @@
 
     /*-fx-stroke-type: outside;*/
 }
+
+/*---------------------------------------------------------*/
+
+.timer-stop-view-area{
+    -fx-max-width: 640;
+    -fx-max-height: 320;
+    -fx-min-width: 640;
+    -fx-min-height: 320;
+    -fx-background-color: rgba(81, 204, 122, 1.0);
+    -fx-border-width: 0;
+    -fx-background-radius: 40px;
+}
+
+
+.timer-stop-view-area-bg{
+    -fx-max-width: 720;
+    -fx-max-height: 360;
+    -fx-min-width: 720;
+    -fx-min-height: 360;
+    -fx-pref-width: 720;
+    -fx-pref-height: 360;
+
+    -fx-background-radius: 40;
+    -fx-background-color: rgb(36, 36, 36);
+}
+
+.timer-stop-view-btn{
+    -fx-max-width: 245;
+    -fx-max-height: 245;
+    -fx-min-width: 245;
+    -fx-min-height: 245;
+
+    -fx-background-color: rgba(2,2,2,1.0);
+    -fx-background-radius: 40;
+
+    -fx-content-display: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: 60%;
+}
+.timer-stop-view-btn:hover{
+    -fx-background-color: rgb(36, 97, 112);
+    -fx-cursor: hand;
+}
+
+.btn-timer-play{
+    -fx-background-image: url('../icons/btn-timer-play.png');
+}
+.btn-timer-play-break{
+    -fx-background-image: url('../icons/btn-timer-play-break.png');
+}
+.btn-hide{
+    -fx-background-image: url('../icons/btn-hide.png');
+}
+
+
+
+
+
+
+
+
+
 
 /*.mediaViewInfo {*/
 /*    --web-view-name: mainA1-SC-01;*/

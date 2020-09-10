@@ -3,16 +3,21 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.tharindusathis</groupId>
     <artifactId>jomodoro-timer</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
+            <version>14</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
             <version>14</version>
         </dependency>
         <dependency>
@@ -25,6 +30,20 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.6.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-shade-plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>14</version>
+            <classifier>win</classifier>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
@@ -38,8 +57,8 @@
             </plugin>
             <plugin>
                 <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.3</version>
+                        <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.4</version>
                 <configuration>
                     <mainClass>com.github.tharindusathis.jomodoro.App</mainClass>
                     <launcher>launch</launcher>
@@ -50,6 +69,7 @@
                     <noHeaderFiles>true</noHeaderFiles>
                 </configuration>
             </plugin>
+
 
 <!--            todo-->
 <!--            <plugin>-->
@@ -76,6 +96,9 @@
 <!--                    </archive>-->
 <!--                </configuration>-->
 <!--            </plugin>-->
+
+
+
         </plugins>
     </build>
 </project>

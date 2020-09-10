@@ -1,27 +1,25 @@
 package com.github.tharindusathis.jomodoro.controller;
 
+import com.github.tharindusathis.jomodoro.App;
 import com.github.tharindusathis.jomodoro.service.CountdownTask;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
-import javafx.scene.Scene;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.Timer;
 
 /**
@@ -39,8 +37,15 @@ public class MainController extends Controller
     double xOffset;
     double yOffset;
     boolean stageDragging = false;
-    // Stage fullScreenStage;
-    // Stage mainStage;
+    Bounds mainWindowBounds;
+    FullScreenController fullScreenController;
+    boolean isBreak = false;
+    @FXML
+    private Pane mainWindowInvisibleBorder;
+    @FXML
+    private StackPane mainWindow;
+    @FXML
+    private StackPane timerStopView;
     @FXML
     private Button tagBtnMainView;
     @FXML
@@ -70,35 +75,58 @@ public class MainController extends Controller
     @FXML
     private Button btnCtrlCtrlView;
     @FXML
+    private Button btnHide;
+    @FXML
+    private Button btnTimerPlay;
+    @FXML
+    private Button btnTimerPlayBreak;
+    @FXML
     private AnchorPane outerPath;
     @FXML
     private StackPane paneParent;
     @FXML
     private GridPane gridPaneCtrlBtnArea;
 
-    void addTime( int seconds )
+    void addMinute()
     {
         boolean state = running;
-        System.out.println( "Adding" + seconds / 60 + ":" + seconds % 60 );
+        System.out.println( "Adding 1 minute" );
         pauseTimer();
-        remainingSecondsSetter( remainingSeconds + seconds );
+        remainingSecondsSetter( remainingSeconds + 60 );
         if( state )
             startTimer();
-
     }
 
     void breakTimer()
     {
         pauseTimer();
         remainingSecondsSetter( breakTimerDuration );
+        setIsBreak( true );
     }
 
-    int getMins()
+    private FullScreenController getFullScreenController()
+    {
+        if( fullScreenController == null )
+        {
+            if( controllerManager == null )
+            {
+                return null;
+            }
+            else
+            {
+                return fullScreenController = ( FullScreenController ) controllerManager.getController(
+                        ControllerManager.View.FULLSCREEN );
+            }
+        }
+        return fullScreenController;
+    }
+
+    int getMinutes()
     {
         return remainingSeconds / 60;
     }
 
-    int getSecs()
+    int getSeconds()
     {
         return remainingSeconds % 60;
     }
@@ -106,7 +134,7 @@ public class MainController extends Controller
     @FXML
     void handleBtnAdd( ActionEvent event )
     {
-        addTime( 60 );
+        addMinute();
     }
 
     @FXML
@@ -118,13 +146,21 @@ public class MainController extends Controller
     @FXML
     void handleBtnCtrlCtrlView( ActionEvent event )
     {
-        setViewAsMainView();
+        setView( MainControllerViews.MAIN );
     }
 
     @FXML
     void handleBtnCtrlMainView( ActionEvent event )
     {
-        setViewAsCtrlView();
+        setView( MainControllerViews.CTRL );
+    }
+
+    @FXML
+    void handleBtnHide( ActionEvent event )
+    {
+        mainWindow.setVisible( false );
+        mainWindowInvisibleBorder.setStyle( "-fx-border-color: rgba(254, 254, 254, 0.01)" );
+        mainWindowBounds = mainWindow.getBoundsInParent();
     }
 
     @FXML
@@ -143,8 +179,8 @@ public class MainController extends Controller
     @FXML
     void handleBtnSettings( ActionEvent event )
     {
-        //todo:
-        // showFullScreenView();
+
+        getFullScreenController().setView( FullScreenController.FullscreenControllerView.START );
         controllerManager.showView( ControllerManager.View.FULLSCREEN );
     }
 
@@ -156,70 +192,57 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleMouseEnteredBtnCtrlCtrlView( MouseEvent event )
+    void handleBtnTimerPlay( ActionEvent event )
     {
+        // addTime( 60 );
+        resetTimer();
+        getFullScreenController().setView( FullScreenController.FullscreenControllerView.START );
+        controllerManager.showView( ControllerManager.View.FULLSCREEN );
+    }
 
-//        if( fullScreenStage != null )
-//        {
-//            fullScreenStage.show();
-//        }
+    @FXML
+    void handleBtnTimerPlayBreak( ActionEvent event )
+    {
+        // addTime( 60 );
+        breakTimer();
+        startTimer();
+        getFullScreenController().setView( FullScreenController.FullscreenControllerView.BREAK );
+        controllerManager.showView( ControllerManager.View.FULLSCREEN );
     }
 
     @FXML
     void handleMouseEnteredBtnCtrlMainView( MouseEvent event )
     {
-        if( mainView.isVisible() )
-        {
-            ctrlView.setVisible( true );
-            mainView.setVisible( false );
-            controllerManager.showView( ControllerManager.View.MAIN );
-        }
-    }
-
-    @FXML
-    void handleMouseEnteredMainView( MouseEvent event )
-    {
-        // todo
-        System.out.println( "Entered To Main" );
-        System.out.println( paneParent.getBoundsInParent().toString() );
-    }
-
-    @FXML
-    void handleMouseExitedBtnCtrlCtrlView( MouseEvent event )
-    {
-
-    }
-
-    @FXML
-    void handleMouseExitedMainView( MouseEvent event )
-    {
-        // todo
-        System.out.println( "Exitted From Main" );
-    }
-
-    private void handleOnFullScreenViewHiding()
-    {
-        paneParent.setVisible( true );
-    }
-
-    private void handleOnFullScreenViewShowing()
-    {
-        paneParent.setVisible( false );
+        setView( MainControllerViews.CTRL );
+        // if( mainView.isVisible() )
+        // {
+        //     // controllerManager.showView( ControllerManager.View.MAIN );
+        // }
     }
 
     @FXML
     void handleOnMouseDraggedBtnCtrlCtrlView( MouseEvent event )
     {
-        double newX = event.getScreenX() - getStage().getX();
+        double newX = event.getScreenX() - mainView.getBoundsInParent().getCenterX();
 
-        if( newX < 720 && newX > 100 )
+        if( newX < 1440 && newX > 120 )
+        {
             getStage().setWidth( newX );
+        }
     }
 
-    @FXML
-    void handleOnMouseDraggedBtnCtrlMainView( MouseEvent event )
-    {
+    void playSound(){
+        try {
+            Media sound =  new Media(
+                     getClass().getResource("/com/github/tharindusathis/jomodoro/sounds/microwave_oven.mp3").toString()
+            );
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     @FXML
     void handleOnMouseDraggedCtrlBtnArea( MouseEvent event )
@@ -231,12 +254,6 @@ public class MainController extends Controller
     void handleOnMousePressedBtnCtrlCtrlView( MouseEvent event )
     {
         stageDraggingOnPressed( event );
-    }
-
-    @FXML
-    void handleOnMousePressedBtnCtrlMainView( MouseEvent event )
-    {
-
     }
 
     @FXML
@@ -260,27 +277,76 @@ public class MainController extends Controller
     @FXML
     void initialize()
     {
+        playSound();
         running = false;
-        resetTimer();
 
-        setViewAsMainView();
+        setIsBreak( false );
+
+
+        setView( MainControllerViews.TIMER_STOP );
+        btnTimerPlayBreak.setVisible( false );
 
         final InvalidationListener ctrlViewVisualizer = event ->
         {
             if( stageDragging ) return;
-            if( btnCtrlCtrlView.isHover() || gridPaneCtrlBtnArea.isHover() )
+            if( ( btnCtrlCtrlView.isHover() || gridPaneCtrlBtnArea.isHover() ) )
             {
-                ctrlView.setVisible( true );
-                mainView.setVisible( false );
+                setView( MainControllerViews.CTRL );
             }
+            else if( remainingSeconds == defaultTimerDuration )
+            {
+                btnTimerPlayBreak.setVisible( false );
+                setView( MainControllerViews.TIMER_STOP );
+            }
+            else if( remainingSeconds > 0 )
+            {
+                setView( MainControllerViews.MAIN );
+            }
+
             else
             {
-                ctrlView.setVisible( false );
-                mainView.setVisible( true );
+                btnTimerPlayBreak.setVisible( true );
+                setView( MainControllerViews.TIMER_STOP );
             }
         };
         btnCtrlCtrlView.hoverProperty().addListener( ctrlViewVisualizer );
         gridPaneCtrlBtnArea.hoverProperty().addListener( ctrlViewVisualizer );
+
+        mainWindow.setVisible( true );
+
+        mainWindowBounds = mainWindow.getBoundsInParent();
+        mainWindowInvisibleBorder.setStyle( "-fx-border-color: rgba(0,0,0,0.0)" );
+        mainView.hoverProperty().addListener( e ->
+        {
+            if( mainView.isHover() && !btnCtrlMainView.isHover() )
+            {
+                mainWindow.setVisible( false );
+                mainWindowInvisibleBorder.setStyle( "-fx-border-color: rgba(254, 254, 254, 0.01)" );
+                mainWindowBounds = mainWindow.getBoundsInParent();
+            }
+        } );
+        final EventHandler<MouseEvent> onMouseLeaveMainView = e ->
+        {
+            if( mainWindowBounds == null ) return;
+            if(
+                    e.getX() >= mainWindowBounds.getMinX() && e.getX() <= mainWindowBounds.getMaxX() && e.getY() >= mainWindowBounds.getMinY() && e.getY() <= mainWindowBounds.getMaxY()
+            )
+            {
+                System.out.println( "on view" );
+            }
+            else
+            {
+                mainWindow.setVisible( true );
+                mainWindowInvisibleBorder.setStyle( "-fx-border-color: rgba(0,0,0,0.0)" );
+            }
+        };
+        mainWindowInvisibleBorder.setOnMouseMoved( onMouseLeaveMainView );
+        mainWindowInvisibleBorder.setOnMouseEntered( onMouseLeaveMainView );
+        mainWindowInvisibleBorder.setOnMouseExited( onMouseLeaveMainView );
+
+
+        getFullScreenController();
+        resetTimer();
     }
 
     void pauseTimer()
@@ -299,13 +365,13 @@ public class MainController extends Controller
     {
         this.remainingSeconds = secs;
         String formattedTime;
-        if( String.valueOf( getMins() ).length() <= 2 )
+        if( String.valueOf( getMinutes() ).length() <= 2 )
         {
-            formattedTime = String.format( "%02d:%02d", getMins(), getSecs() );
+            formattedTime = String.format( "%02d:%02d", getMinutes(), getSeconds() );
         }
-        else if( String.valueOf( getMins() ).length() <= 3 )
+        else if( String.valueOf( getMinutes() ).length() <= 3 )
         {
-            formattedTime = String.format( "%02d", getMins() );
+            formattedTime = String.format( "%02d", getMinutes() );
         }
         else
         {
@@ -313,7 +379,22 @@ public class MainController extends Controller
         }
         System.out.println( "Set time to: " + formattedTime );
         lblTimer.setText( formattedTime );
+        if( getFullScreenController() != null )
+        {
+            getFullScreenController().getLblTimer().setText( formattedTime );
+            getFullScreenController().updateBreakProgressBar( ( double ) remainingSeconds / breakTimerDuration );
+        }
         lblTimerSmall.setText( formattedTime );
+        if( secs == 0 )
+        {
+            playSound();
+            ((NotifyFlashScreenController)controllerManager.getController( ControllerManager.View.NOTIFY_FLASH )).flash();
+
+            setView( MainControllerViews.TIMER_STOP );
+            running = false;
+            setIsBreak( !isBreak );
+            btnTimerPlayBreak.setVisible( isBreak );
+        }
     }
 
     public void resetTimer()
@@ -332,37 +413,43 @@ public class MainController extends Controller
         this.defaultTimerDuration = defaultTimerDuration;
     }
 
-    private void setInvisible()
+    private void setIsBreak( boolean isBreak )
     {
-        paneParent.setOpacity( 0.01 );
-        ctrlView.setVisible( false );
+        this.isBreak = isBreak;
     }
 
     public void setTagLabel( String text )
     {
-        if( text.isBlank() )
-        {
-            text = "Pomodoro";
-        }
-        else
+        if( !text.isBlank() )
         {
             text = text.trim();
-        }
         tagBtnCtrlView.setText( text );
         tagBtnMainView.setText( text );
+        }
     }
 
-    private void setViewAsCtrlView()
+    public void setView( MainControllerViews view )
     {
-        mainView.setVisible( false );
-        ctrlView.setVisible( true );
+        if( view == MainControllerViews.MAIN )
+        {
+            mainView.setVisible( true );
+            ctrlView.setVisible( false );
+            timerStopView.setVisible( false );
+        }
+        else if( view == MainControllerViews.CTRL )
+        {
+            mainView.setVisible( false );
+            ctrlView.setVisible( true );
+            timerStopView.setVisible( false );
+        }
+        else if( view == MainControllerViews.TIMER_STOP )
+        {
+            mainView.setVisible( true );
+            ctrlView.setVisible( false );
+            timerStopView.setVisible( true );
+        }
     }
 
-    private void setViewAsMainView()
-    {
-        mainView.setVisible( true );
-        ctrlView.setVisible( false );
-    }
 
     void stageDraggingOnDragged( MouseEvent event )
     {
@@ -387,13 +474,18 @@ public class MainController extends Controller
         }
         else if( btnCtrlCtrlView.isHover() || gridPaneCtrlBtnArea.isHover() )
         {
-            ctrlView.setVisible( true );
-            mainView.setVisible( false );
+            setView( MainControllerViews.CTRL );
         }
         else
         {
-            ctrlView.setVisible( false );
-            mainView.setVisible( true );
+            if( remainingSeconds >= 1 )
+            {
+                setView( MainControllerViews.MAIN );
+            }
+            else
+            {
+                setView( MainControllerViews.TIMER_STOP );
+            }
         }
         stageDragging = false;
     }
@@ -405,6 +497,22 @@ public class MainController extends Controller
         timer.schedule( new CountdownTask( remainingSeconds, this::remainingSecondsSetter ), 0, 1000 );
         btnStart.getStyleClass().remove( "btn-start" );
         btnStart.getStyleClass().add( "btn-pause" );
+    }
+
+    // private void setViewAsCtrlView()
+    // {
+    //     mainView.setVisible( false );
+    //     ctrlView.setVisible( true );
+    // }
+    //
+    // private void setViewAsMainView()
+    // {
+    //     mainView.setVisible( true );
+    //     ctrlView.setVisible( false );
+    // }
+    public enum MainControllerViews
+    {
+        MAIN, CTRL, TIMER_STOP
     }
 
 }

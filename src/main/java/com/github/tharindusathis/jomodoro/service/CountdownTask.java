@@ -32,6 +32,8 @@ public class CountdownTask extends TimerTask
         if( remainingSeconds > 0 )
         {
             remainingSeconds--;
+        }else{
+            this.cancel();
         }
         });
     }

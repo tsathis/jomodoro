@@ -12,6 +12,7 @@ public class ControllerManager
     public Controller getController( View view )
     {
         if( controllersMap == null ) return null;
+        if( !controllersMap.containsKey( view )) return null;
         return controllersMap.get( view );
     }
 
@@ -46,6 +47,7 @@ public class ControllerManager
     {
         MAIN,
         FULLSCREEN,
-        TRAY_MENU;
+        TRAY_MENU,
+        NOTIFY_FLASH
     }
 }

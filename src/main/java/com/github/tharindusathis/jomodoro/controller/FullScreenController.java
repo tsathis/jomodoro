@@ -3,11 +3,12 @@ package com.github.tharindusathis.jomodoro.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 
 public class FullScreenController extends Controller
 {
@@ -16,17 +17,27 @@ public class FullScreenController extends Controller
     @FXML
     private BorderPane txtTimeContainer;
     @FXML
+    private BorderPane breakViewPane;
+    @FXML
+    private BorderPane startViewPane;
+    @FXML
     private Button btnSpinnerTimeDown;
     @FXML
     private Button btnSpinnerTimeUp;
     @FXML
     private TextField txtTime;
     @FXML
+    private Label lblTimer;
+    @FXML
+    private ProgressBar breakProgressBar;
+    @FXML
     private BorderPane txtBreakContainer;
     @FXML
     private Button btnSpinnerBreakDown;
     @FXML
     private Button btnSpinnerBreakUp;
+    @FXML
+    private Button btnFinishBreak;
     @FXML
     private TextField txtBreak;
     @FXML
@@ -42,7 +53,8 @@ public class FullScreenController extends Controller
     void btnCloseOnAction( ActionEvent event )
     {
         //todo
-        getStage().close();
+        // getStage().close();
+        controllerManager.showView( ControllerManager.View.MAIN );
     }
 
     @FXML
@@ -73,7 +85,8 @@ public class FullScreenController extends Controller
     @FXML
     void btnStartOnAction( ActionEvent event )
     {
-        final MainController mainController = (MainController) controllerManager.getController( ControllerManager.View.MAIN );
+        final MainController mainController = ( MainController ) controllerManager.getController(
+                ControllerManager.View.MAIN );
         mainController.setDefaultTimerDuration( Integer.parseInt( txtTime.getText() ) * 60 );
         mainController.setBreakTimerDuration( Integer.parseInt( txtBreak.getText() ) * 60 );
         mainController.resetTimer();
@@ -81,7 +94,9 @@ public class FullScreenController extends Controller
         mainController.setTagLabel( txtLabel.getText() );
 
         //todo
-        getStage().close();
+        // getStage().close();
+        mainController.setView( MainController.MainControllerViews.MAIN );
+        controllerManager.showView( ControllerManager.View.MAIN );
     }
 
     private void changeDurationValue( TextField textField, int i )
@@ -103,19 +118,30 @@ public class FullScreenController extends Controller
 
     }
 
+    public Label getLblTimer()
+    {
+        return lblTimer;
+    }
+
+    @FXML
+    void handleBtnFinishBreak( ActionEvent event )
+    {
+        setView( FullscreenControllerView.START );
+    }
+
     @FXML
     void initialize()
     {
         txtTime.textProperty().addListener( ( observable, oldValue, newValue ) ->
         {
-            if( !validateDuration( newValue ) && !newValue.isEmpty() )
+            if( isInvalidDuration( newValue ) && !newValue.isEmpty() )
             {
                 txtTime.setText( oldValue );
             }
         } );
         txtBreak.textProperty().addListener( ( observable, oldValue, newValue ) ->
         {
-            if( !validateDuration( newValue ) && !newValue.isEmpty() )
+            if( isInvalidDuration( newValue ) && !newValue.isEmpty() )
             {
                 txtBreak.setText( oldValue );
             }
@@ -124,22 +150,46 @@ public class FullScreenController extends Controller
         txtBreak.setText( "5" );
     }
 
+    private boolean isInvalidDuration( String input )
+    {
+        try
+        {
+            int value = Integer.parseInt( input );
+            return value < 1 || value > 999;
+        }
+        catch( NumberFormatException e )
+        {
+            return true;
+        }
+    }
+
+    public void setView( FullscreenControllerView view )
+    {
+        if( view == FullscreenControllerView.START )
+        {
+            startViewPane.setVisible( true );
+            breakViewPane.setVisible( false );
+        }
+        else if( view == FullscreenControllerView.BREAK )
+        {
+            startViewPane.setVisible( false );
+            breakViewPane.setVisible( true );
+        }
+    }
+
     @FXML
     void txtTimeInputMethodTextChanged( InputMethodEvent event )
     {
         System.out.println( event );
     }
 
-    private boolean validateDuration( String input )
+    public void updateBreakProgressBar( double value )
     {
-        try
-        {
-            int value = Integer.parseInt( input );
-            return value >= 1 && value <= 999;
-        }
-        catch( NumberFormatException e )
-        {
-            return false;
-        }
+        breakProgressBar.setProgress( value );
+    }
+
+    enum FullscreenControllerView
+    {
+        START, BREAK
     }
 }
