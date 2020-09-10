@@ -26,3 +26,15 @@ i
 9src/main/java/com/github/tharindusathis/jomodoro/App.java,b\5\b541730476c22cc339e1c6a26dbfca6bce291e4b
 å
 \src/main/java/com/github/tharindusathis/jomodoro/controller/NotifyFlashScreenController.java,6\4\64b757e0fbbf19a4c762bd4c587e97c6a769d49f
+L
+.idea/artifacts/Jomodoro.xml,f\c\fc0c9b1e5bb04e263f046081bd86122450b24884
+T
+$.idea/artifacts/JomodoroArtifact.xml,7\9\79f12fe099103f35b294fb3a48bad88c93387be6
+T
+$.idea/codeStyles/codeStyleConfig.xml,d\d\dd7b3350c29c49497756c7f32c69a3bed18b1cba
+Å
+Qsrc/main/resources/com/github/tharindusathis/jomodoro/styles/style-fullscreen.css,d\0\d00f9cc59de6adeee168f3d03581a87c015acb7e
+y
+Isrc/main/resources/com/github/tharindusathis/jomodoro/view/main-view.fxml,d\0\d01fb87df9b213136f2e13879a198b63ca23fe85
+É
+Ssrc/main/resources/com/github/tharindusathis/jomodoro/view/notify-flash-screen.fxml,b\c\bc4d74820bb0bc46e5ee302b5573f3a6aeac10f1

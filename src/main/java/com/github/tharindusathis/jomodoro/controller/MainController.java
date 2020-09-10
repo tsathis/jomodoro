@@ -1,6 +1,5 @@
 package com.github.tharindusathis.jomodoro.controller;
 
-import com.github.tharindusathis.jomodoro.App;
 import com.github.tharindusathis.jomodoro.service.CountdownTask;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -19,7 +18,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import java.io.File;
 import java.util.Timer;
 
 /**
@@ -29,7 +27,7 @@ import java.util.Timer;
  */
 public class MainController extends Controller
 {
-    boolean running = false;
+    State currentState = State.INIT;
     Timer timer;
     int defaultTimerDuration = 25 * 60;
     int breakTimerDuration = 5 * 60;
@@ -39,7 +37,6 @@ public class MainController extends Controller
     boolean stageDragging = false;
     Bounds mainWindowBounds;
     FullScreenController fullScreenController;
-    boolean isBreak = false;
     @FXML
     private Pane mainWindowInvisibleBorder;
     @FXML
@@ -89,19 +86,13 @@ public class MainController extends Controller
 
     void addMinute()
     {
-        boolean state = running;
-        System.out.println( "Adding 1 minute" );
+        State previousState = currentState;
         pauseTimer();
         remainingSecondsSetter( remainingSeconds + 60 );
-        if( state )
+        if( previousState.isRunning() )
+        {
             startTimer();
-    }
-
-    void breakTimer()
-    {
-        pauseTimer();
-        remainingSecondsSetter( breakTimerDuration );
-        setIsBreak( true );
+        }
     }
 
     private FullScreenController getFullScreenController()
@@ -114,8 +105,9 @@ public class MainController extends Controller
             }
             else
             {
-                return fullScreenController = ( FullScreenController ) controllerManager.getController(
+                fullScreenController = ( FullScreenController ) controllerManager.getController(
                         ControllerManager.View.FULLSCREEN );
+                return fullScreenController;
             }
         }
         return fullScreenController;
@@ -140,7 +132,8 @@ public class MainController extends Controller
     @FXML
     void handleBtnBreak( ActionEvent event )
     {
-        breakTimer();
+        setTimerToBreakTime();
+        getFullScreenController().setView( FullScreenController.FullscreenControllerView.START );
     }
 
     @FXML
@@ -187,14 +180,23 @@ public class MainController extends Controller
     @FXML
     void handleBtnStart( ActionEvent event )
     {
-        if( running ) pauseTimer();
-        else startTimer();
+        if( currentState == State.INIT )
+        {
+            startTimer();
+        }
+        else if( currentState.isRunning() )
+        {
+            pauseTimer();
+        }
+        else
+        {
+            startTimer();
+        }
     }
 
     @FXML
     void handleBtnTimerPlay( ActionEvent event )
     {
-        // addTime( 60 );
         resetTimer();
         getFullScreenController().setView( FullScreenController.FullscreenControllerView.START );
         controllerManager.showView( ControllerManager.View.FULLSCREEN );
@@ -203,8 +205,7 @@ public class MainController extends Controller
     @FXML
     void handleBtnTimerPlayBreak( ActionEvent event )
     {
-        // addTime( 60 );
-        breakTimer();
+        setTimerToBreakTime();
         startTimer();
         getFullScreenController().setView( FullScreenController.FullscreenControllerView.BREAK );
         controllerManager.showView( ControllerManager.View.FULLSCREEN );
@@ -214,10 +215,6 @@ public class MainController extends Controller
     void handleMouseEnteredBtnCtrlMainView( MouseEvent event )
     {
         setView( MainControllerViews.CTRL );
-        // if( mainView.isVisible() )
-        // {
-        //     // controllerManager.showView( ControllerManager.View.MAIN );
-        // }
     }
 
     @FXML
@@ -230,19 +227,6 @@ public class MainController extends Controller
             getStage().setWidth( newX );
         }
     }
-
-    void playSound(){
-        try {
-            Media sound =  new Media(
-                     getClass().getResource("/com/github/tharindusathis/jomodoro/sounds/microwave_oven.mp3").toString()
-            );
-            MediaPlayer mediaPlayer = new MediaPlayer(sound);
-            mediaPlayer.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @FXML
     void handleOnMouseDraggedCtrlBtnArea( MouseEvent event )
@@ -278,10 +262,6 @@ public class MainController extends Controller
     void initialize()
     {
         playSound();
-        running = false;
-
-        setIsBreak( false );
-
 
         setView( MainControllerViews.TIMER_STOP );
         btnTimerPlayBreak.setVisible( false );
@@ -344,14 +324,25 @@ public class MainController extends Controller
         mainWindowInvisibleBorder.setOnMouseEntered( onMouseLeaveMainView );
         mainWindowInvisibleBorder.setOnMouseExited( onMouseLeaveMainView );
 
-
         getFullScreenController();
         resetTimer();
     }
 
     void pauseTimer()
     {
-        running = false;
+        if( currentState == State.WORK_RUNNING )
+        {
+            currentState = State.WORK_STOP;
+        }
+        else if( currentState == State.BREAK_RUNNING )
+        {
+            currentState = State.BREAK_STOP;
+        }
+        else
+        {
+            return;
+        }
+
         if( timer != null )
         {
             timer.cancel();
@@ -359,6 +350,22 @@ public class MainController extends Controller
         }
         btnStart.getStyleClass().remove( "btn-pause" );
         btnStart.getStyleClass().add( "btn-start" );
+    }
+
+    void playSound()
+    {
+        try
+        {
+            Media sound = new Media(
+                    getClass().getResource( "/com/github/tharindusathis/jomodoro/sounds/microwave_oven.mp3" ).toString()
+            );
+            MediaPlayer mediaPlayer = new MediaPlayer( sound );
+            mediaPlayer.play();
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace();
+        }
     }
 
     void remainingSecondsSetter( int secs )
@@ -388,12 +395,19 @@ public class MainController extends Controller
         if( secs == 0 )
         {
             playSound();
-            ((NotifyFlashScreenController)controllerManager.getController( ControllerManager.View.NOTIFY_FLASH )).flash();
+            ( ( NotifyFlashScreenController ) controllerManager.getController(
+                    ControllerManager.View.NOTIFY_FLASH ) ).flash();
 
             setView( MainControllerViews.TIMER_STOP );
-            running = false;
-            setIsBreak( !isBreak );
-            btnTimerPlayBreak.setVisible( isBreak );
+            if( currentState == State.BREAK_RUNNING )
+            {
+                currentState = State.BREAK_STOP;
+            }
+            else
+            {
+                currentState = State.WORK_STOP;
+            }
+            btnTimerPlayBreak.setVisible( currentState == State.WORK_STOP );
         }
     }
 
@@ -413,19 +427,20 @@ public class MainController extends Controller
         this.defaultTimerDuration = defaultTimerDuration;
     }
 
-    private void setIsBreak( boolean isBreak )
-    {
-        this.isBreak = isBreak;
-    }
-
     public void setTagLabel( String text )
     {
         if( !text.isBlank() )
         {
             text = text.trim();
-        tagBtnCtrlView.setText( text );
-        tagBtnMainView.setText( text );
+            tagBtnCtrlView.setText( text );
+            tagBtnMainView.setText( text );
         }
+    }
+
+    void setTimerToBreakTime()
+    {
+        pauseTimer();
+        remainingSecondsSetter( breakTimerDuration );
     }
 
     public void setView( MainControllerViews view )
@@ -449,7 +464,6 @@ public class MainController extends Controller
             timerStopView.setVisible( true );
         }
     }
-
 
     void stageDraggingOnDragged( MouseEvent event )
     {
@@ -492,24 +506,45 @@ public class MainController extends Controller
 
     public void startTimer()
     {
-        running = true;
+        if( currentState == State.BREAK_STOP )
+        {
+            currentState = State.BREAK_RUNNING;
+        }
+        else
+        {
+            currentState = State.WORK_RUNNING;
+        }
+
         timer = new Timer();
         timer.schedule( new CountdownTask( remainingSeconds, this::remainingSecondsSetter ), 0, 1000 );
+
+        setView( MainControllerViews.MAIN );
+
         btnStart.getStyleClass().remove( "btn-start" );
         btnStart.getStyleClass().add( "btn-pause" );
     }
 
-    // private void setViewAsCtrlView()
-    // {
-    //     mainView.setVisible( false );
-    //     ctrlView.setVisible( true );
-    // }
-    //
-    // private void setViewAsMainView()
-    // {
-    //     mainView.setVisible( true );
-    //     ctrlView.setVisible( false );
-    // }
+    public enum State
+    {
+        WORK_RUNNING( true ),
+        BREAK_RUNNING( true ),
+        WORK_STOP( false ),
+        BREAK_STOP( false ),
+        INIT( false );
+
+        private final boolean running;
+
+        State( boolean running )
+        {
+            this.running = running;
+        }
+
+        public boolean isRunning()
+        {
+            return this.running;
+        }
+    }
+
     public enum MainControllerViews
     {
         MAIN, CTRL, TIMER_STOP

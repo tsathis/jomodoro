@@ -4,7 +4,7 @@
     -fx-min-width: 1440;
     -fx-min-height: 1080;
     -fx-background-color: rgba(250, 26, 26, 0.0);
-    -fx-border-color: rgba(254, 254, 254, 1.01);
+    -fx-border-color: rgba(128, 128, 128, 1.01);
     -fx-border-width: 360px;
     /*-fx-border-insets: -40px;*/
 }

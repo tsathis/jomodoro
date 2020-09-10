@@ -1,24 +1,24 @@
 
-V	java:S125"<This block of commented-out lines of code should be removed.(Ú°à¬8ëÒğ­Ã.
-v
-java:S2259"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(³÷ğ¥úÿÿÿÿ8ëÒğ­Ã.
-p
-java:S2259"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(‹ˆ¨88ç…—Ã.
-v
-java:S2259"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(àìÀùÿÿÿÿ8ëÒğ­Ã.
-q
-java:S2259"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(ÉµÆ£8ç…—Ã.
-[	java:S125"<This block of commented-out lines of code should be removed.(äã“ùøÿÿÿÿ8ç…—Ã.
-[	java:S125"<This block of commented-out lines of code should be removed.(¥¸©§ıÿÿÿÿ8ç…—Ã.
-r
-java:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(æşÄûúÿÿÿÿ8ëÒğ­Ã.
-[	java:S125"<This block of commented-out lines of code should be removed.(¥¸©§ıÿÿÿÿ8ç…—Ã.
-V	java:S125"<This block of commented-out lines of code should be removed.(Ú°à¬8ëÒğ­Ã.
-]
-java:S1128"CRemove this unused import 'com.github.tharindusathis.jomodoro.App'.(·å58£Åş­Ã.
-D
-java:S1128")Remove this unused import 'java.io.File'.(†Ğ¥Å8Éïë­Ã.
-p
-java:S2259"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(‹ˆ¨88ç…—Ã.
-N
-java:S1121".Extract the assignment out of this expression.(ïŠœÿÿÿÿÿ8ç…—Ã.
+P
+java:S1121u".Extract the assignment out of this expression.(ïŠœÿÿÿÿÿ8ç…—Ã.
+s
+java:S2259Ç"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(‹ˆ¨88ç…—Ã.
+_
+java:S1128"CRemove this unused import 'com.github.tharindusathis.jomodoro.App'.(·å58£Åş­Ã.
+Y	java:S125÷"<This block of commented-out lines of code should be removed.(Ú°à¬8ëÒğ­Ã.
+t
+java:S2259Ñ"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(ÉµÆ£8ç…—Ã.
+y
+java:S2259"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(àìÀùÿÿÿÿ8ëÒğ­Ã.
+Y	java:S125ı"<This block of commented-out lines of code should be removed.(Ú°à¬8ëÒğ­Ã.
+s
+java:S2259·"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(‹ˆ¨88ç…—Ã.
+u
+java:S3776–"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(æşÄûúÿÿÿÿ8ëÒğ­Ã.
+^	java:S125Ù"<This block of commented-out lines of code should be removed.(äã“ùøÿÿÿÿ8ç…—Ã.
+y
+java:S2259€"VA "NullPointerException" could be thrown; "getFullScreenController()" can return null.(³÷ğ¥úÿÿÿÿ8ëÒğ­Ã.
+^	java:S125Î"<This block of commented-out lines of code should be removed.(¥¸©§ıÿÿÿÿ8ç…—Ã.
+^	java:S125Å"<This block of commented-out lines of code should be removed.(¥¸©§ıÿÿÿÿ8ç…—Ã.
+F
+java:S1128")Remove this unused import 'java.io.File'.(†Ğ¥Å8Éïë­Ã.

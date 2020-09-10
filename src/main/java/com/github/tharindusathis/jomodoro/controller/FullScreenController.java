@@ -90,7 +90,7 @@ public class FullScreenController extends Controller
         mainController.setDefaultTimerDuration( Integer.parseInt( txtTime.getText() ) * 60 );
         mainController.setBreakTimerDuration( Integer.parseInt( txtBreak.getText() ) * 60 );
         mainController.resetTimer();
-        mainController.startTimer();
+        mainController.startTimer( );
         mainController.setTagLabel( txtLabel.getText() );
 
         //todo

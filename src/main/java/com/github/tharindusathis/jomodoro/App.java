@@ -76,7 +76,6 @@ public class App extends Application
                 getClass().getResource( "/com/github/tharindusathis/jomodoro/view/main-view.fxml" ) );
         Region contentRootRegion = loader.load();
 
-
         double origW = 720.0 + 720;
         double origH = 360.0 + 720;
 
