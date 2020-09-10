@@ -12,8 +12,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -61,8 +59,8 @@ public class App extends Application
         rootPane.setMaxWidth( origW );
 
 
-
         fullscreenViewStage = new Stage();
+        fullscreenViewStage.initOwner( getUtilityStage() );
         fullscreenViewStage.initStyle( StageStyle.TRANSPARENT );
         scene.setFill( Color.TRANSPARENT );
         fullscreenViewStage.setScene( scene );
@@ -78,8 +76,9 @@ public class App extends Application
                 getClass().getResource( "/com/github/tharindusathis/jomodoro/view/main-view.fxml" ) );
         Region contentRootRegion = loader.load();
 
-        double origW = 720 + 720;
-        double origH = 360 + 720;
+
+        double origW = 720.0 + 720;
+        double origH = 360.0 + 720;
 
         contentRootRegion.setPrefWidth( origW );
         contentRootRegion.setPrefHeight( origH );
@@ -96,12 +95,19 @@ public class App extends Application
         group.scaleYProperty().bind( width );
 
         mainViewStage = new Stage();
+        mainViewStage.initOwner(getUtilityStage());
         mainViewStage.initStyle( StageStyle.TRANSPARENT );
         scene.setFill( Color.TRANSPARENT );
         mainViewStage.setScene( scene );
         mainViewStage.setAlwaysOnTop( true );
 
+        // initial scaling
         mainViewStage.setWidth( origW * INIT_UI_SCALE_FACTOR );
+
+        // restore when manual minimize
+        mainViewStage.iconifiedProperty().addListener(
+                ( ov, t, t1 ) -> mainViewStage.setIconified( false ) );
+
         return loader.getController();
     }
 
@@ -119,7 +125,7 @@ public class App extends Application
         contentRootRegion.setPickOnBounds( false );
 
         notifyFlashScreenStage = new Stage();
-
+        notifyFlashScreenStage.initOwner( getUtilityStage() );
         notifyFlashScreenStage.initStyle( StageStyle.TRANSPARENT );
         Scene scene = new Scene( contentRootRegion, screenBounds.getWidth(), screenBounds.getHeight() );
         contentRootRegion.setStyle( "-fx-background-color: rgba(0,0,0,0.0)" );
@@ -157,4 +163,21 @@ public class App extends Application
         mainViewStage.show();
 
     }
+
+    /**
+     * Get a utility styled stage.
+     *
+     * @return Utility styled stage
+     */
+    private Stage getUtilityStage(){
+        Stage utilityStage = new Stage();
+        utilityStage.initStyle(StageStyle.UTILITY);
+        utilityStage.setOpacity(0);
+        utilityStage.setHeight(0);
+        utilityStage.setWidth(0);
+        utilityStage.show();
+        return utilityStage;
+    }
+
+
 }
