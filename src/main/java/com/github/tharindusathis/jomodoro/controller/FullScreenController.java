@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
@@ -85,6 +86,11 @@ public class FullScreenController extends Controller
     @FXML
     void btnStartOnAction( ActionEvent event )
     {
+        startTimer();
+    }
+
+    private void startTimer()
+    {
         final MainController mainController = ( MainController ) controllerManager.getController(
                 ControllerManager.View.MAIN );
         mainController.setDefaultTimerDuration( Integer.parseInt( txtTime.getText() ) * 60 );
@@ -127,6 +133,9 @@ public class FullScreenController extends Controller
     void handleBtnFinishBreak( ActionEvent event )
     {
         setView( FullscreenControllerView.START );
+        // TODO:
+        // ( ( MainController ) controllerManager.getController( ControllerManager.View.MAIN ) ).setCurrentState( MainController.State.BREAK_STOP );
+        // ( ( MainController ) controllerManager.getController( ControllerManager.View.MAIN ) ).resetTimer();
     }
 
     @FXML
@@ -144,6 +153,11 @@ public class FullScreenController extends Controller
             if( isInvalidDuration( newValue ) && !newValue.isEmpty() )
             {
                 txtBreak.setText( oldValue );
+            }
+        } );
+        txtLabel.setOnKeyReleased( event -> {
+            if(event.getCode() == KeyCode.ENTER){
+                startTimer();
             }
         } );
         txtTime.setText( "25" );

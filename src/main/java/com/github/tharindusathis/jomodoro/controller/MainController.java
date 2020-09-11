@@ -10,7 +10,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -27,6 +26,16 @@ import java.util.Timer;
  */
 public class MainController extends Controller
 {
+    public State getCurrentState()
+    {
+        return currentState;
+    }
+
+    public void setCurrentState( State currentState )
+    {
+        this.currentState = currentState;
+    }
+
     State currentState = State.INIT;
     Timer timer;
     int defaultTimerDuration = 25 * 60;
@@ -48,16 +57,6 @@ public class MainController extends Controller
     @FXML
     private Button tagBtnCtrlView;
     @FXML
-    private Button btnSettings;
-    @FXML
-    private Button btnRestart;
-    @FXML
-    private Button btnAdd;
-    @FXML
-    private Button btnQuit;
-    @FXML
-    private Button btnBreak;
-    @FXML
     private Button btnStart;
     @FXML
     private Label lblTimer;
@@ -72,15 +71,7 @@ public class MainController extends Controller
     @FXML
     private Button btnCtrlCtrlView;
     @FXML
-    private Button btnHide;
-    @FXML
-    private Button btnTimerPlay;
-    @FXML
     private Button btnTimerPlayBreak;
-    @FXML
-    private AnchorPane outerPath;
-    @FXML
-    private StackPane paneParent;
     @FXML
     private GridPane gridPaneCtrlBtnArea;
 
@@ -134,12 +125,6 @@ public class MainController extends Controller
     {
         setTimerToBreakTime();
         getFullScreenController().setView( FullScreenController.FullscreenControllerView.START );
-    }
-
-    @FXML
-    void handleBtnCtrlCtrlView( ActionEvent event )
-    {
-        setView( MainControllerViews.MAIN );
     }
 
     @FXML
@@ -396,7 +381,7 @@ public class MainController extends Controller
         {
             playSound();
             ( ( NotifyFlashScreenController ) controllerManager.getController(
-                    ControllerManager.View.NOTIFY_FLASH ) ).flash();
+                    ControllerManager.View.NOTIFY_FLASH ) ).flashRepeatedly(60);
 
             setView( MainControllerViews.TIMER_STOP );
             if( currentState == State.BREAK_RUNNING )
@@ -506,6 +491,9 @@ public class MainController extends Controller
 
     public void startTimer()
     {
+        ( ( NotifyFlashScreenController ) controllerManager.getController(
+                ControllerManager.View.NOTIFY_FLASH ) ).flashReset();
+
         if( currentState == State.BREAK_STOP )
         {
             currentState = State.BREAK_RUNNING;
