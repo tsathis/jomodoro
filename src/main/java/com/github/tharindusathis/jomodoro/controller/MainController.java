@@ -17,9 +17,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Timer;
+
+import static com.github.tharindusathis.jomodoro.controller.ControllerManager.View;
+import static com.github.tharindusathis.jomodoro.controller.FullScreenController.FullscreenControllerView;
 
 /**
  * Main controller class
@@ -28,6 +29,7 @@ import java.util.Timer;
  */
 public class MainController extends Controller
 {
+    final static int FLASH_NOTIFY_REPEAT_INTERVAL = 60;
     State currentState = State.INIT;
     Timer timer;
     int defaultTimerDuration = 25 * 60;
@@ -88,24 +90,6 @@ public class MainController extends Controller
         this.currentState = currentState;
     }
 
-    private FullScreenController getFullScreenController()
-    {
-        if( fullScreenController == null )
-        {
-            if( controllerManager == null )
-            {
-                return null;
-            }
-            else
-            {
-                fullScreenController = ( FullScreenController ) controllerManager.getController(
-                        ControllerManager.View.FULLSCREEN );
-                return fullScreenController;
-            }
-        }
-        return fullScreenController;
-    }
-
     int getMinutes()
     {
         return remainingSeconds / 60;
@@ -126,9 +110,8 @@ public class MainController extends Controller
     void handleBtnBreak( ActionEvent event )
     {
         setTimerToBreakTime();
-        Objects.requireNonNull( getFullScreenController() ).setView(
-                FullScreenController.FullscreenControllerView.START );
-
+        getControllerManager().flatMap( ctrlMgr -> ctrlMgr.getController( FullScreenController.class ) )
+                              .ifPresent( controller -> controller.setView( FullscreenControllerView.START ) );
     }
 
     @FXML
@@ -161,10 +144,14 @@ public class MainController extends Controller
     @FXML
     void handleBtnSettings( ActionEvent event )
     {
-
-        Objects.requireNonNull( getFullScreenController() ).setView(
-                FullScreenController.FullscreenControllerView.START );
-        controllerManager.showView( ControllerManager.View.FULLSCREEN );
+        getControllerManager().ifPresent(
+                ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
+                                  .ifPresent( controller ->
+                                  {
+                                      controller.setView( FullscreenControllerView.START );
+                                      ctrlMgr.showView( View.FULLSCREEN );
+                                  } )
+        );
     }
 
     @FXML
@@ -188,9 +175,12 @@ public class MainController extends Controller
     void handleBtnTimerPlay( ActionEvent event )
     {
         resetTimer();
-        Objects.requireNonNull( getFullScreenController() ).setView(
-                FullScreenController.FullscreenControllerView.START );
-        controllerManager.showView( ControllerManager.View.FULLSCREEN );
+        getControllerManager().ifPresent( ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
+                                                            .ifPresent( controller ->
+                                                            {
+                                                                controller.setView( FullscreenControllerView.START );
+                                                                ctrlMgr.showView( View.FULLSCREEN );
+                                                            } ) );
     }
 
     @FXML
@@ -198,9 +188,13 @@ public class MainController extends Controller
     {
         setTimerToBreakTime();
         startTimer();
-        Objects.requireNonNull( getFullScreenController() ).setView(
-                FullScreenController.FullscreenControllerView.BREAK );
-        controllerManager.showView( ControllerManager.View.FULLSCREEN );
+
+        getControllerManager().ifPresent( ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
+                                                            .ifPresent( controller ->
+                                                            {
+                                                                controller.setView( FullscreenControllerView.BREAK );
+                                                                ctrlMgr.showView( View.FULLSCREEN );
+                                                            } ) );
     }
 
     @FXML
@@ -316,7 +310,6 @@ public class MainController extends Controller
         mainWindowInvisibleBorder.setOnMouseEntered( onMouseLeaveMainView );
         mainWindowInvisibleBorder.setOnMouseExited( onMouseLeaveMainView );
 
-        getFullScreenController();
         resetTimer();
     }
 
@@ -378,34 +371,25 @@ public class MainController extends Controller
         }
         System.out.println( "Set time to: " + formattedTime );
 
-        { // TODO: Remove this block (CRITICAL)
-
-
-            Optional.ofNullable( controllerManager )
-                    .flatMap(
-                            ctrlMgr -> Optional.ofNullable(
-                                    ctrlMgr.getController( ControllerManager.View.NOTIFY_FLASH ) ) )
-                    .ifPresentOrElse(
-                            controller -> ( ( NotifyFlashScreenController ) controller ).flashReset(),
-                            () -> System.out.println( "Null Fount" ) )
-            ;
-
-        }
-
         lblTimer.setText( formattedTime );
-        if( getFullScreenController() != null )
-        {
 
-            Objects.requireNonNull( getFullScreenController() ).getLblTimer().setText( formattedTime );
-            Objects.requireNonNull( getFullScreenController() ).updateBreakProgressBar(
-                    ( double ) remainingSeconds / breakTimerDuration );
-        }
+        getControllerManager().flatMap( ctrlMgr -> ctrlMgr.getController( FullScreenController.class ) )
+                              .ifPresent( ctrlr ->
+                              {
+                                  ctrlr.getLblTimer().setText( formattedTime );
+                                  ctrlr.updateBreakProgressBar(
+                                          ( double ) remainingSeconds / breakTimerDuration );
+                              } );
+
         lblTimerSmall.setText( formattedTime );
         if( secs == 0 )
         {
             playSound();
-            ( ( NotifyFlashScreenController ) controllerManager.getController(
-                    ControllerManager.View.NOTIFY_FLASH ) ).flashRepeatedly( 60 );
+
+            getControllerManager()
+                    .flatMap( ctrlMgr -> ctrlMgr.getController( NotifyFlashScreenController.class ) )
+                    .ifPresent( controller -> controller.flashRepeatedly( FLASH_NOTIFY_REPEAT_INTERVAL ) )
+            ;
 
             setView( MainControllerViews.TIMER_STOP );
             if( currentState == State.BREAK_RUNNING )
@@ -515,8 +499,11 @@ public class MainController extends Controller
 
     public void startTimer()
     {
-        ( ( NotifyFlashScreenController ) controllerManager.getController(
-                ControllerManager.View.NOTIFY_FLASH ) ).flashReset();
+        getControllerManager()
+                .flatMap( ctrlMgr -> ctrlMgr.getController( NotifyFlashScreenController.class ) )
+                .ifPresent( NotifyFlashScreenController::flashReset )
+        ;
+
 
         if( currentState == State.BREAK_STOP )
         {

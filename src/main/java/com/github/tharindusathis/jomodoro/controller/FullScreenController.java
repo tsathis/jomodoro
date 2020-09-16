@@ -53,9 +53,7 @@ public class FullScreenController extends Controller
     @FXML
     void btnCloseOnAction( ActionEvent event )
     {
-        //todo
-        // getStage().close();
-        controllerManager.showView( ControllerManager.View.MAIN );
+        getControllerManager().ifPresent( controllerManager -> controllerManager.showView( ControllerManager.View.MAIN ) );
     }
 
     @FXML
@@ -91,18 +89,18 @@ public class FullScreenController extends Controller
 
     private void startTimer()
     {
-        final MainController mainController = ( MainController ) controllerManager.getController(
-                ControllerManager.View.MAIN );
-        mainController.setDefaultTimerDuration( Integer.parseInt( txtTime.getText() ) * 60 );
-        mainController.setBreakTimerDuration( Integer.parseInt( txtBreak.getText() ) * 60 );
-        mainController.resetTimer();
-        mainController.startTimer( );
-        mainController.setTagLabel( txtLabel.getText() );
-
-        //todo
-        // getStage().close();
-        mainController.setView( MainController.MainControllerViews.MAIN );
-        controllerManager.showView( ControllerManager.View.MAIN );
+        getControllerManager()
+                .flatMap( controllerManager -> controllerManager.getController( MainController.class ) )
+                .ifPresent( mainController ->
+                {
+                    mainController.setDefaultTimerDuration( Integer.parseInt( txtTime.getText() ) * 60 );
+                    mainController.setBreakTimerDuration( Integer.parseInt( txtBreak.getText() ) * 60 );
+                    mainController.resetTimer();
+                    mainController.startTimer();
+                    mainController.setTagLabel( txtLabel.getText() );
+                    mainController.setView( MainController.MainControllerViews.MAIN );
+                } );
+        getControllerManager().ifPresent( controllerManager -> controllerManager.showView( ControllerManager.View.MAIN ));
     }
 
     private void changeDurationValue( TextField textField, int i )

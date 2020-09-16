@@ -4,16 +4,26 @@ import javafx.stage.Stage;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ControllerManager
 {
     private Map<View,Controller> controllersMap;
 
-    public Controller getController( View view )
+    private <T extends Controller> T findController( Class<T> controllerType )
     {
         if( controllersMap == null ) return null;
-        if( !controllersMap.containsKey( view )) return null;
-        return controllersMap.get( view );
+
+        for (Map.Entry<View, Controller> entry : controllersMap.entrySet()) {
+            if(controllerType.isInstance( entry.getValue())){
+                return (T) entry.getValue();
+            }
+        }
+        return  null;
+    }
+
+    public <T extends Controller> Optional<T> getController( Class<T> controllerType){
+        return Optional.ofNullable( findController( controllerType ) );
     }
 
     public void registerController( View view, Controller controller, Stage stage )
