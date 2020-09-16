@@ -28,6 +28,7 @@ public class NotifyFlashScreenController extends Controller
     public void flashRepeatedly( int seconds )
     {
         flashReset();
+        timer = new Timer();
         timer.scheduleAtFixedRate( new TimerTask()
         {
             @Override
