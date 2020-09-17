@@ -119,8 +119,8 @@ public class FullScreenController extends Controller
                 startTimer();
             }
         } );
-        timeTextBox.setText( "25" );
-        breakTextBox.setText( "5" );
+        timeTextBox.setText( String.format("%d",Configs.getTimerDuration() / 60));
+        breakTextBox.setText( String.format("%d",Configs.getBreakTimerDuration() / 60));
     }
 
     private boolean isInvalidDuration( String input )

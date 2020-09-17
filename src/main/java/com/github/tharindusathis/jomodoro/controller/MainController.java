@@ -2,6 +2,7 @@ package com.github.tharindusathis.jomodoro.controller;
 
 import com.github.tharindusathis.jomodoro.timer.Configs;
 import com.github.tharindusathis.jomodoro.timer.CountdownTask;
+import com.github.tharindusathis.jomodoro.util.Loggers;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.robot.Robot;
 
 import java.util.Timer;
+import java.util.logging.Level;
 
 import static com.github.tharindusathis.jomodoro.controller.ControllerManager.View;
 import static com.github.tharindusathis.jomodoro.controller.FullScreenController.FullscreenStageViews;
@@ -40,6 +42,7 @@ public class MainController extends Controller
     boolean stageDragging = false;
 
     Bounds containerBoundsOnScreen;
+    Robot robot = new Robot();
 
     @FXML
     private StackPane parentContainer;
@@ -85,13 +88,13 @@ public class MainController extends Controller
     }
 
     @FXML
-    void btnAddOnAction( ActionEvent event )
+    void btnAddOnAction( @SuppressWarnings( "unused" ) ActionEvent event )
     {
         addTime( 60 );
     }
 
     @FXML
-    void btnBreakOnAction( ActionEvent event )
+    void btnBreakOnAction(  @SuppressWarnings( "unused" ) ActionEvent event )
     {
         setTimerToBreakTime();
         getControllerManager().flatMap( ctrlMgr -> ctrlMgr.getController( FullScreenController.class ) )
@@ -99,20 +102,20 @@ public class MainController extends Controller
     }
 
     @FXML
-    void btnCloseOnAction( ActionEvent event )
+    void btnCloseOnAction(  @SuppressWarnings( "unused" ) ActionEvent event )
     {
         Platform.exit();
         System.exit( 0 );
     }
 
     @FXML
-    void btnRestartOnAction( ActionEvent event )
+    void btnRestartOnAction(  @SuppressWarnings( "unused" )  ActionEvent event )
     {
         resetTimer();
     }
 
     @FXML
-    void btnSettingsOnAction( ActionEvent event )
+    void btnSettingsOnAction( @SuppressWarnings( "unused" )  ActionEvent event )
     {
         getControllerManager().ifPresent(
                 ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
@@ -125,7 +128,7 @@ public class MainController extends Controller
     }
 
     @FXML
-    void btnStartOnAction( ActionEvent event )
+    void btnStartOnAction(  @SuppressWarnings( "unused" )  ActionEvent event )
     {
         if( currentState == State.INIT )
         {
@@ -154,19 +157,19 @@ public class MainController extends Controller
     }
 
     @FXML
-    void controlAreaGridPaneOnMouseReleased( MouseEvent event )
+    void controlAreaGridPaneOnMouseReleased( @SuppressWarnings( "unused" )  MouseEvent event )
     {
         stageDraggingOnReleased();
     }
 
     @FXML
-    void controlButtonTimerViewOnAction( ActionEvent event )
+    void controlButtonTimerViewOnAction( @SuppressWarnings( "unused" )  ActionEvent event )
     {
         setView( MainStageViews.CONTROL );
     }
 
     @FXML
-    void controlButtonTimerViewOnMouseEntered( MouseEvent event )
+    void controlButtonTimerViewOnMouseEntered(  @SuppressWarnings( "unused" ) MouseEvent event )
     {
         setView( MainStageViews.CONTROL );
     }
@@ -182,14 +185,14 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleBtnHide( ActionEvent event )
+    void handleBtnHide( @SuppressWarnings( "unused" )  ActionEvent event )
     {
         containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
         parentContainer.setVisible( false );
     }
 
     @FXML
-    void handleBtnTimerPlay( ActionEvent event )
+    void handleBtnTimerPlay( @SuppressWarnings( "unused" )  ActionEvent event )
     {
         resetTimer();
         getControllerManager().ifPresent( ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
@@ -201,7 +204,7 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleBtnTimerPlayBreak( ActionEvent event )
+    void handleBtnTimerPlayBreak( @SuppressWarnings( "unused" )  ActionEvent event )
     {
         setTimerToBreakTime();
         startTimer();
@@ -232,7 +235,7 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleOnMouseReleasedBtnCtrlCtrlView( MouseEvent event )
+    void handleOnMouseReleasedBtnCtrlCtrlView( @SuppressWarnings( "unused" )  MouseEvent event )
     {
         stageDraggingOnReleased();
     }
@@ -246,18 +249,13 @@ public class MainController extends Controller
             {
                 setView( MainStageViews.CONTROL );
             }
-            else if( remainingSeconds == Configs.getTimerDuration() )
-            {
-                btnTimerPlayBreak.setVisible( false );
-                setView( MainStageViews.TIMER_STOP );
-            }
-            else if( remainingSeconds > 0 )
+            else if(currentState.isRunning() || remainingSeconds > 0)
             {
                 setView( MainStageViews.TIMER );
             }
             else
             {
-                btnTimerPlayBreak.setVisible( true );
+                btnTimerPlayBreak.setVisible( currentState == State.WORK_STOP );
                 setView( MainStageViews.TIMER_STOP );
             }
         };
@@ -267,6 +265,9 @@ public class MainController extends Controller
 
         timerView.hoverProperty().addListener( e ->
         {
+            /* TODO: check whether this breaks current code || remove */
+            if(!currentState.isRunning()) return;
+
             if( timerView.isHover() && !controlButtonTimerView.isHover() )
             {
                 containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
@@ -327,31 +328,21 @@ public class MainController extends Controller
         }
         catch( Exception e )
         {
+            Loggers.COMMON_LOGGER.log( Level.WARNING, e.getMessage() );
             e.printStackTrace();
         }
     }
 
     void remainingSecondsSetter( int secs )
     {
-        Robot robot = new Robot();
-        System.out.println( "X " + robot.getMousePosition().getX() );
         if( containerBoundsOnScreen != null )
         {
-            Point2D e = robot.getMousePosition();
-            System.out.println( containerBoundsOnScreen );
-
-            if(
-                    e.getX() >= containerBoundsOnScreen.getMinX() && e.getX() <= containerBoundsOnScreen.getMaxX() && e.getY() >= containerBoundsOnScreen.getMinY() && e.getY() <= containerBoundsOnScreen.getMaxY()
-            )
-            {
-                System.out.println( "on view" );
-            }
-            else
+            Point2D mousePoint = robot.getMousePosition();
+            if( !containerBoundsOnScreen.contains( mousePoint ) )
             {
                 parentContainer.setVisible( true );
             }
         }
-
 
         this.remainingSeconds = secs;
         String formattedTime;
@@ -367,7 +358,7 @@ public class MainController extends Controller
         {
             formattedTime = "999+";
         }
-        System.out.println( "Set time to: " + formattedTime );
+        Loggers.COMMON_LOGGER.log( Level.INFO, () -> "Set time to: " + formattedTime );
 
         timeLabelTimerView.setText( formattedTime );
 
@@ -428,11 +419,11 @@ public class MainController extends Controller
 
     public void setView( MainStageViews view )
     {
-        if( view == MainStageViews.TIMER )
+        if( view == MainStageViews.TIMER || view == MainStageViews.TIMER_STOP)
         {
             timerView.setVisible( true );
             controlView.setVisible( false );
-            timerStopView.setVisible( false );
+            timerStopView.setVisible( view == MainStageViews.TIMER_STOP );
         }
         else if( view == MainStageViews.CONTROL )
         {
@@ -440,12 +431,7 @@ public class MainController extends Controller
             controlView.setVisible( true );
             timerStopView.setVisible( false );
         }
-        else if( view == MainStageViews.TIMER_STOP )
-        {
-            timerView.setVisible( true );
-            controlView.setVisible( false );
-            timerStopView.setVisible( true );
-        }
+        Loggers.COMMON_LOGGER.log( Level.FINE, () -> "Set view: " + view.name() );
     }
 
     void stageDraggingOnDragged( MouseEvent event )
@@ -494,7 +480,6 @@ public class MainController extends Controller
                 .ifPresent( NotifyFlashScreenController::flashReset )
         ;
 
-
         if( currentState == State.BREAK_STOP )
         {
             currentState = State.BREAK_RUNNING;
@@ -507,10 +492,11 @@ public class MainController extends Controller
         mainTimer = new Timer();
         mainTimer.schedule( new CountdownTask( remainingSeconds, this::remainingSecondsSetter ), 0, 1000 );
 
-        setView( MainStageViews.TIMER );
 
         btnStart.getStyleClass().remove( "btn-start" );
         btnStart.getStyleClass().add( "btn-pause" );
+
+        /* TODO: check whether this if this code needed: `setView( MainStageViews.TIMER );` */
     }
 
     public enum State
