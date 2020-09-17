@@ -4,6 +4,7 @@ import com.github.tharindusathis.jomodoro.timer.Configs;
 import com.github.tharindusathis.jomodoro.timer.CountdownTask;
 import com.github.tharindusathis.jomodoro.util.Constants;
 import com.github.tharindusathis.jomodoro.util.Loggers;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.robot.Robot;
+import javafx.util.Duration;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,7 +47,8 @@ public class MainController extends Controller
 
     Bounds containerBoundsOnScreen;
     Robot robot = new Robot();
-
+    FadeTransition fadeOutParentContainer;
+    FadeTransition fadeInParentContainer;
     @FXML
     private StackPane parentContainer;
     @FXML
@@ -96,7 +99,7 @@ public class MainController extends Controller
     }
 
     @FXML
-    void btnBreakOnAction(  @SuppressWarnings( "unused" ) ActionEvent event )
+    void btnBreakOnAction( @SuppressWarnings( "unused" ) ActionEvent event )
     {
         setTimerToBreakTime();
         getControllerManager().flatMap( ctrlMgr -> ctrlMgr.getController( FullScreenController.class ) )
@@ -104,20 +107,39 @@ public class MainController extends Controller
     }
 
     @FXML
-    void btnCloseOnAction(  @SuppressWarnings( "unused" ) ActionEvent event )
+    void btnCloseOnAction( @SuppressWarnings( "unused" ) ActionEvent event )
     {
         Platform.exit();
         System.exit( 0 );
     }
 
     @FXML
-    void btnRestartOnAction(  @SuppressWarnings( "unused" )  ActionEvent event )
+    void btnHideOnAction( @SuppressWarnings( "unused" ) ActionEvent event )
+    {
+        setVisibilityParentContainer( false );
+        new Timer().schedule( new TimerTask()
+        {
+
+            @Override
+            public void run()
+            {
+                Platform.runLater( () ->
+                {
+                    setVisibilityParentContainer( true );
+                    this.cancel();
+                } );
+            }
+        }, 60 * 1000L );
+    }
+
+    @FXML
+    void btnRestartOnAction( @SuppressWarnings( "unused" ) ActionEvent event )
     {
         resetTimer();
     }
 
     @FXML
-    void btnSettingsOnAction( @SuppressWarnings( "unused" )  ActionEvent event )
+    void btnSettingsOnAction( @SuppressWarnings( "unused" ) ActionEvent event )
     {
         getControllerManager().ifPresent(
                 ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
@@ -130,7 +152,7 @@ public class MainController extends Controller
     }
 
     @FXML
-    void btnStartOnAction(  @SuppressWarnings( "unused" )  ActionEvent event )
+    void btnStartOnAction( @SuppressWarnings( "unused" ) ActionEvent event )
     {
         if( currentState == State.INIT )
         {
@@ -147,6 +169,18 @@ public class MainController extends Controller
     }
 
     @FXML
+    void btnTimerPlayOnAction( @SuppressWarnings( "unused" ) ActionEvent event )
+    {
+        resetTimer();
+        getControllerManager().ifPresent( ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
+                                                            .ifPresent( controller ->
+                                                            {
+                                                                controller.setView( FullscreenStageViews.START );
+                                                                ctrlMgr.showView( View.FULLSCREEN );
+                                                            } ) );
+    }
+
+    @FXML
     void controlAreaGridPaneOnMouseDragged( MouseEvent event )
     {
         stageDraggingOnDragged( event );
@@ -159,19 +193,19 @@ public class MainController extends Controller
     }
 
     @FXML
-    void controlAreaGridPaneOnMouseReleased( @SuppressWarnings( "unused" )  MouseEvent event )
+    void controlAreaGridPaneOnMouseReleased( @SuppressWarnings( "unused" ) MouseEvent event )
     {
         stageDraggingOnReleased();
     }
 
     @FXML
-    void controlButtonTimerViewOnAction( @SuppressWarnings( "unused" )  ActionEvent event )
+    void controlButtonTimerViewOnAction( @SuppressWarnings( "unused" ) ActionEvent event )
     {
         setView( MainStageViews.CONTROL );
     }
 
     @FXML
-    void controlButtonTimerViewOnMouseEntered(  @SuppressWarnings( "unused" ) MouseEvent event )
+    void controlButtonTimerViewOnMouseEntered( @SuppressWarnings( "unused" ) MouseEvent event )
     {
         setView( MainStageViews.CONTROL );
     }
@@ -187,38 +221,7 @@ public class MainController extends Controller
     }
 
     @FXML
-    void btnHideOnAction( @SuppressWarnings( "unused" )  ActionEvent event )
-    {
-        containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
-        parentContainer.setVisible( false );
-        new Timer().schedule( new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                Platform.runLater( ()->
-                {
-                    parentContainer.setVisible( true );
-                    this.cancel();
-                });
-            }
-        }, 60 * 1000L);
-    }
-
-    @FXML
-    void btnTimerPlayOnAction( @SuppressWarnings( "unused" )  ActionEvent event )
-    {
-        resetTimer();
-        getControllerManager().ifPresent( ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
-                                                            .ifPresent( controller ->
-                                                            {
-                                                                controller.setView( FullscreenStageViews.START );
-                                                                ctrlMgr.showView( View.FULLSCREEN );
-                                                            } ) );
-    }
-
-    @FXML
-    void handleBtnTimerPlayBreak( @SuppressWarnings( "unused" )  ActionEvent event )
+    void handleBtnTimerPlayBreak( @SuppressWarnings( "unused" ) ActionEvent event )
     {
         setTimerToBreakTime();
         startTimer();
@@ -248,7 +251,7 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleOnMouseReleasedBtnCtrlCtrlView( @SuppressWarnings( "unused" )  MouseEvent event )
+    void handleOnMouseReleasedBtnCtrlCtrlView( @SuppressWarnings( "unused" ) MouseEvent event )
     {
         stageDraggingOnReleased();
     }
@@ -262,15 +265,17 @@ public class MainController extends Controller
             {
                 setView( MainStageViews.CONTROL );
             }
-            else if(currentState.isRunning() && remainingSeconds > 0)
+            else if( currentState.isRunning() && remainingSeconds > 0 )
             {
                 setView( MainStageViews.TIMER );
             }
-            else if(!currentState.isRunning())
+            else if( !currentState.isRunning() )
             {
                 btnTimerPlayBreak.setVisible( currentState == State.WORK_STOP );
                 setView( MainStageViews.TIMER_STOP );
-            }else{
+            }
+            else
+            {
                 setView( MainStageViews.TIMER );
             }
         };
@@ -281,17 +286,15 @@ public class MainController extends Controller
         timerView.hoverProperty().addListener( e ->
         {
             /* TODO: check whether this breaks current code || remove */
-            if(!currentState.isRunning()) return;
+            if( !currentState.isRunning() ) return;
 
             if( timerView.isHover() && !controlButtonTimerView.isHover() )
             {
-                containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
-                parentContainer.setVisible( false );
+                setVisibilityParentContainer( false );
             }
         } );
         containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
     }
-
 
     @FXML
     void initialize()
@@ -355,7 +358,7 @@ public class MainController extends Controller
             Point2D mousePoint = robot.getMousePosition();
             if( !containerBoundsOnScreen.contains( mousePoint ) )
             {
-                parentContainer.setVisible( true );
+                setVisibilityParentContainer( true );
             }
         }
 
@@ -415,7 +418,6 @@ public class MainController extends Controller
         remainingSecondsSetter( Configs.getTimerDuration() );
     }
 
-
     public void setTagLabel( String text )
     {
         if( !text.isBlank() )
@@ -434,7 +436,7 @@ public class MainController extends Controller
 
     public void setView( MainStageViews view )
     {
-        if( view == MainStageViews.TIMER || view == MainStageViews.TIMER_STOP)
+        if( view == MainStageViews.TIMER || view == MainStageViews.TIMER_STOP )
         {
             timerView.setVisible( true );
             controlView.setVisible( false );
@@ -447,6 +449,50 @@ public class MainController extends Controller
             timerStopView.setVisible( false );
         }
         Loggers.COMMON_LOGGER.log( Level.FINE, () -> "Set view: " + view.name() );
+    }
+
+    private void setVisibilityParentContainer( boolean visible )
+    {
+        if((parentContainer.isVisible() == visible) && (parentContainer.getOpacity() > 0 == visible)) {
+            return;
+        }
+        double duration = 1000;
+        if( visible )
+        {
+            if( fadeInParentContainer == null )
+            {
+                fadeInParentContainer = new FadeTransition();
+                fadeInParentContainer.setDuration( Duration.millis( duration ) );
+                fadeInParentContainer.setFromValue( 0.0 );
+                fadeInParentContainer.setToValue( 1 );
+                fadeInParentContainer.setCycleCount( 1 );
+                fadeInParentContainer.setAutoReverse( false );
+                fadeInParentContainer.setNode( parentContainer );
+            }
+            parentContainer.setOpacity( 0 );
+            parentContainer.setVisible( true );
+            fadeInParentContainer.play();
+        }
+        else
+        {
+            containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
+            if( fadeOutParentContainer == null )
+            {
+                fadeOutParentContainer = new FadeTransition();
+                fadeOutParentContainer.setDuration( Duration.millis( duration ) );
+                fadeOutParentContainer.setFromValue( 1 );
+                fadeOutParentContainer.setToValue( 0.0 );
+                fadeOutParentContainer.setCycleCount( 1 );
+                fadeOutParentContainer.setAutoReverse( false );
+                fadeOutParentContainer.setNode( parentContainer );
+                fadeOutParentContainer.setOnFinished( fadeEvent ->
+                {
+                    parentContainer.setVisible( false );
+                    parentContainer.setOpacity( 1 );
+                } );
+            }
+            fadeOutParentContainer.play();
+        }
     }
 
     void stageDraggingOnDragged( MouseEvent event )

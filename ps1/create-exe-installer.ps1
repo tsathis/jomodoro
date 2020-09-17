@@ -31,6 +31,13 @@ Set-Variable -Name JPACKAGE_ARGS -Value @(
     '--type',
     'exe',
     '--win-shortcut',
+    '--win-menu',
+    '--win-menu-group',
+    """$PROJECT""",
+    '--resource-dir',
+    'res'
+    '--app-version',
+    """$VERSION""",
     '--module-path',
     """$MODPATH""",
     '--module',
