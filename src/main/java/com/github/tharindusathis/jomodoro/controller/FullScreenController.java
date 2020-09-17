@@ -1,5 +1,6 @@
 package com.github.tharindusathis.jomodoro.controller;
 
+import com.github.tharindusathis.jomodoro.timer.Configs;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,13 +9,10 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
 public class FullScreenController extends Controller
 {
-    @FXML
-    private AnchorPane paneParent;
     @FXML
     private BorderPane txtTimeContainer;
     @FXML
@@ -93,12 +91,13 @@ public class FullScreenController extends Controller
                 .flatMap( controllerManager -> controllerManager.getController( MainController.class ) )
                 .ifPresent( mainController ->
                 {
-                    mainController.setDefaultTimerDuration( Integer.parseInt( txtTime.getText() ) * 60 );
-                    mainController.setBreakTimerDuration( Integer.parseInt( txtBreak.getText() ) * 60 );
+
+                    Configs.setDefaultTimerDuration( Integer.parseInt( txtTime.getText() ) * 60 );
+                    Configs.setBreakTimerDuration( Integer.parseInt( txtBreak.getText() ) * 60 );
                     mainController.resetTimer();
                     mainController.startTimer();
                     mainController.setTagLabel( txtLabel.getText() );
-                    mainController.setView( MainController.MainControllerViews.MAIN );
+                    mainController.setView( MainController.MainStageViews.TIMER );
                 } );
         getControllerManager().ifPresent( controllerManager -> controllerManager.showView( ControllerManager.View.MAIN ));
     }

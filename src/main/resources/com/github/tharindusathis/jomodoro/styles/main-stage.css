@@ -4,12 +4,12 @@
     -fx-min-width: 1440;
     -fx-min-height: 1080;
     -fx-background-color: rgba(250, 26, 26, 0.0);
-    -fx-border-color: rgba(128, 128, 128, 1.01);
-    -fx-border-width: 360px;
+    -fx-border-width: 0;
+    /*-fx-border-color: rgba(128, 128, 128, 1.01);*/
     /*-fx-border-insets: -40px;*/
 }
 
-.main-window{
+.parent-container{
     -fx-max-width: 720;
     -fx-max-height: 360;
     -fx-min-width: 720;
@@ -21,7 +21,7 @@
     -fx-background-color: rgba(0,0,0,.338);
 }
 
-.main-bg{
+.timer-view {
     -fx-max-width: 720;
     -fx-max-height: 360;
     -fx-min-width: 720;
@@ -41,7 +41,7 @@
     -fx-pref-height: 320;
 }
 
-.ctrl-btn-area{
+.control-area-grid-pane{
     -fx-max-width: 680;
     -fx-max-height: 220;
     -fx-min-width: 680;
@@ -53,7 +53,7 @@
     -fx-background-color: rgba(170,190,250,1);
 }
 
-.ctrl-btn-area:hover{
+.control-area-grid-pane:hover{
     -fx-cursor: move;
 }
 
@@ -129,7 +129,7 @@
     -fx-graphic: url('../icons/pause-white.png');
 }
 
-.ctrl-btn{
+.control-button-timer-view{
     -fx-max-width: 92;
     -fx-max-height: 92;
     -fx-min-width: 92;
@@ -148,7 +148,7 @@
 /*    -fx-graphic: url('../icons/xd/ctrl-white.png');*/
 /*}*/
 
-.ctrl-btn-mini{
+.control-button-control-view{
     -fx-max-width: 92;
     -fx-max-height: 92;
     -fx-min-width: 92;
@@ -163,13 +163,13 @@
     /*-fx-border-width: 0 5 5 0;*/
     /*-fx-border-color:  linear-gradient(to bottom right, rgba(170,190,250,0) , rgb(14, 70, 248));*/
 }
-.ctrl-btn-mini:hover{
+.control-button-control-view:hover{
     -fx-background-color:  rgba(0,0,0,0.73);
     -fx-cursor: nw_resize;
 }
 
 
-.tag-btn-default{
+.tag-btn-timer-view{
     -fx-max-width: 568;
     -fx-max-height: 72;
     -fx-min-width: 568;
@@ -185,7 +185,7 @@
     -fx-font-weight: 700;
     -fx-padding: 0 10 0 10;
 }
-.tag-btn-small{
+.tag-btn-control-view{
     -fx-max-width: 410;
     -fx-max-height: 70;
     -fx-min-width: 410;
@@ -204,18 +204,18 @@
 
 
 
-.timer-text-default{
+.timer-label-timer-view{
     -fx-text-fill: white;
     /*-fx-font-size: 259;*/
     -fx-padding: 0;
 }
-.timer-text-small{
+.time-label-control-view{
     -fx-text-fill: black;
     -fx-font-size: 87;
     -fx-padding: 0;
 }
 
-.ctrl-btn-area-stack-pane{
+.control-area-stack-pane{
     -fx-max-width: 720;
     -fx-max-height: 240;
     -fx-min-width: 720;

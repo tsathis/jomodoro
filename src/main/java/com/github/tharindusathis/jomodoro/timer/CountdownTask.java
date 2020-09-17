@@ -1,4 +1,4 @@
-package com.github.tharindusathis.jomodoro.service;
+package com.github.tharindusathis.jomodoro.timer;
 
 import javafx.application.Platform;
 

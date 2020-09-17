@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane fx:id="parentContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="100.0" styleClass="parent-container" stylesheets="@../styles/main-stage.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.tharindusathis.jomodoro.controller.MainController">
+   <StackPane>
+      <BorderPane fx:id="timerView" prefHeight="200.0" prefWidth="200.0" styleClass="timer-view" stylesheets="@../styles/main-stage.css">
+         <bottom>
+            <AnchorPane maxHeight="92.0" minHeight="92.0" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <Button fx:id="tagBtnTimerView" mnemonicParsing="false" styleClass="tag-btn-timer-view" stylesheets="@../styles/main-stage.css" text="..." AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="40.0" />
+            </AnchorPane>
+         </bottom>
+         <top>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <Label fx:id="timeLabelTimerView" alignment="TOP_CENTER" mouseTransparent="true" prefHeight="301.6" prefWidth="720.0" styleClass="timer-label-timer-view" stylesheets="@../styles/main-stage.css" text="26:48" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <opaqueInsets>
+                     <Insets left="30.0" right="30.0" />
+                  </opaqueInsets>
+                  <font>
+                     <Font name="Webdings" size="250.0" />
+                  </font>
+               </Label>
+            </AnchorPane>
+         </top>
+      </BorderPane>
+      <StackPane fx:id="timerStopView" styleClass="timer-view" stylesheets="@../styles/main-stage.css">
+         <BorderPane prefHeight="200.0" prefWidth="200.0" stylesheets="@../styles/main-stage.css">
+            <center>
+               <AnchorPane styleClass="timer-stop-view-area" stylesheets="@../styles/main-stage.css" BorderPane.alignment="CENTER">
+                  <Button mnemonicParsing="false" onAction="#handleBtnHide" stylesheets="@../styles/main-stage.css" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="38.0">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <styleClass>
+                        <String fx:value="timer-stop-view-btn" />
+                        <String fx:value="btn-hide" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Hide Temporary" />
+                     </tooltip>
+                  </Button>
+                  <Button layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleBtnTimerPlay" stylesheets="@../styles/main-stage.css" AnchorPane.bottomAnchor="38.0" AnchorPane.rightAnchor="55.0" AnchorPane.topAnchor="38.0">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <styleClass>
+                        <String fx:value="timer-stop-view-btn" />
+                        <String fx:value="btn-timer-play" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="btnTimerPlayBreak" layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleBtnTimerPlayBreak" stylesheets="@../styles/main-stage.css" AnchorPane.bottomAnchor="38.0" AnchorPane.rightAnchor="55.0" AnchorPane.topAnchor="38.0">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <styleClass>
+                        <String fx:value="timer-stop-view-btn" />
+                        <String fx:value="btn-timer-play-break" />
+                     </styleClass>
+                  </Button>
+               </AnchorPane>
+            </center>
+         </BorderPane>
+      </StackPane>
+      <AnchorPane pickOnBounds="false" prefHeight="200.0" prefWidth="200.0">
+         <Button fx:id="controlButtonTimerView" mnemonicParsing="false" onAction="#controlButtonTimerViewOnAction" onMouseEntered="#controlButtonTimerViewOnMouseEntered" styleClass="control-button-timer-view" stylesheets="@../styles/main-stage.css" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      </AnchorPane>
+   </StackPane>
+   <StackPane fx:id="controlView">
+      <BorderPane styleClass="timer-view" stylesheets="@../styles/main-stage.css">
+         <top>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <Label fx:id="timeLabelControlView" layoutX="21.0" layoutY="-12.0" styleClass="time-label-control-view" stylesheets="@../styles/main-stage.css" text="26:48" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="-3.0">
+                  <opaqueInsets>
+                     <Insets left="30.0" right="30.0" />
+                  </opaqueInsets>
+               </Label>
+               <Button fx:id="tagBtnControlView" maxWidth="422.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="422.0" styleClass="tag-btn-control-view" stylesheets="@../styles/main-stage.css" text="My Task" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="25.0" />
+            </AnchorPane>
+         </top>
+         <bottom>
+            <StackPane styleClass="control-area-stack-pane" stylesheets="@../styles/main-stage.css" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <BorderPane pickOnBounds="false" prefHeight="118.0" prefWidth="720.0">
+                  <bottom>
+                     <AnchorPane maxHeight="92.0" minHeight="92.0" pickOnBounds="false" prefHeight="92.0" prefWidth="674.0" BorderPane.alignment="CENTER">
+                        <Button fx:id="controlButtonControlView" layoutX="379.0" layoutY="54.0" mnemonicParsing="false" onMouseDragged="#handleOnMouseDraggedBtnCtrlCtrlView" onMousePressed="#handleOnMousePressedBtnCtrlCtrlView" onMouseReleased="#handleOnMouseReleasedBtnCtrlCtrlView" styleClass="control-button-control-view" stylesheets="@../styles/main-stage.css" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </AnchorPane>
+                  </bottom>
+               </BorderPane>
+               <GridPane fx:id="controlAreaGridPane" onMouseDragged="#controlAreaGridPaneOnMouseDragged" onMousePressed="#controlAreaGridPaneOnMousePressed" onMouseReleased="#controlAreaGridPaneOnMouseReleased" styleClass="control-area-grid-pane" stylesheets="@../styles/main-stage.css">
+                  <columnConstraints>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                  <padding>
+                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                  </padding>
+                  <StackPane.margin>
+                     <Insets bottom="20.0" left="20.0" right="20.0" />
+                  </StackPane.margin>
+                  <Button mnemonicParsing="false" onAction="#btnSettingsOnAction" stylesheets="@../styles/main-stage.css" GridPane.valignment="TOP">
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-settings" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Settings" />
+                     </tooltip>
+                  </Button>
+                  <Button layoutX="10.0" layoutY="16.0" mnemonicParsing="false" onAction="#btnRestartOnAction" stylesheets="@../styles/main-stage.css" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-restart" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Restart Timer" />
+                     </tooltip>
+                  </Button>
+                  <Button layoutX="10.0" layoutY="16.0" mnemonicParsing="false" onAction="#btnAddOnAction" stylesheets="@../styles/main-stage.css" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-add" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Add Time" />
+                     </tooltip>
+                  </Button>
+                  <Button layoutX="10.0" layoutY="16.0" mnemonicParsing="false" onAction="#btnCloseOnAction" stylesheets="@../styles/main-stage.css" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-close" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Quit" />
+                     </tooltip>
+                  </Button>
+                  <Button layoutX="10.0" layoutY="16.0" mnemonicParsing="false" onAction="#btnBreakOnAction" stylesheets="@../styles/main-stage.css" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-break" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Break" />
+                     </tooltip>
+                  </Button>
+                  <Button fx:id="btnStart" layoutX="10.0" layoutY="16.0" mnemonicParsing="false" onAction="#btnStartOnAction" stylesheets="@../styles/main-stage.css" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+                     <tooltip>
+                        <Tooltip text="Play/pause" />
+                     </tooltip>
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-start" />
+                     </styleClass>
+                  </Button>
+               </GridPane>
+            </StackPane>
+         </bottom>
+      </BorderPane>
+   </StackPane>
+   <AnchorPane pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" styleClass="outer-path" stylesheets="@../styles/main-stage.css" visible="false" />
+</StackPane>

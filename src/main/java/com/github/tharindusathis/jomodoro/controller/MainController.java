@@ -1,21 +1,22 @@
 package com.github.tharindusathis.jomodoro.controller;
 
-import com.github.tharindusathis.jomodoro.service.CountdownTask;
+import com.github.tharindusathis.jomodoro.timer.Configs;
+import com.github.tharindusathis.jomodoro.timer.CountdownTask;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.robot.Robot;
 
 import java.util.Timer;
 
@@ -29,85 +30,68 @@ import static com.github.tharindusathis.jomodoro.controller.FullScreenController
  */
 public class MainController extends Controller
 {
-    final static int FLASH_NOTIFY_REPEAT_INTERVAL = 60;
     State currentState = State.INIT;
-    Timer timer;
-    int defaultTimerDuration = 25 * 60;
-    int breakTimerDuration = 5 * 60;
-    int remainingSeconds = defaultTimerDuration;
-    double xOffset;
-    double yOffset;
+
+    Timer mainTimer;
+    int remainingSeconds = Configs.getDefaultTimerDuration();
+
+    double stageDragOffsetX;
+    double stageDragOffsetY;
     boolean stageDragging = false;
-    Bounds mainWindowBounds;
-    FullScreenController fullScreenController;
+
+    Bounds containerBoundsOnScreen;
+
     @FXML
-    private Pane mainWindowInvisibleBorder;
-    @FXML
-    private StackPane mainWindow;
+    private StackPane parentContainer;
     @FXML
     private StackPane timerStopView;
     @FXML
-    private Button tagBtnMainView;
+    private Button tagBtnTimerView;
     @FXML
-    private Button tagBtnCtrlView;
+    private Button tagBtnControlView;
     @FXML
     private Button btnStart;
     @FXML
-    private Label lblTimer;
+    private Label timeLabelTimerView;
     @FXML
-    private Label lblTimerSmall;
+    private Label timeLabelControlView;
     @FXML
-    private BorderPane mainView;
+    private BorderPane timerView;
     @FXML
-    private StackPane ctrlView;
+    private StackPane controlView;
     @FXML
-    private Button btnCtrlMainView;
+    private Button controlButtonTimerView;
     @FXML
-    private Button btnCtrlCtrlView;
+    private Button controlButtonControlView;
     @FXML
     private Button btnTimerPlayBreak;
     @FXML
-    private GridPane gridPaneCtrlBtnArea;
+    private GridPane controlAreaGridPane;
 
-    void addMinute()
+    void addTime( @SuppressWarnings( "SameParameterValue" ) int seconds )
     {
         State previousState = currentState;
         pauseTimer();
-        remainingSecondsSetter( remainingSeconds + 60 );
+        remainingSecondsSetter( remainingSeconds + seconds );
         if( previousState.isRunning() )
         {
             startTimer();
         }
     }
 
-    public State getCurrentState()
+    void afterInitialize()
     {
-        return currentState;
-    }
-
-    public void setCurrentState( State currentState )
-    {
-        this.currentState = currentState;
-    }
-
-    int getMinutes()
-    {
-        return remainingSeconds / 60;
-    }
-
-    int getSeconds()
-    {
-        return remainingSeconds % 60;
+        playSound();
     }
 
     @FXML
-    void handleBtnAdd( ActionEvent event )
+    void btnAddOnAction( ActionEvent event )
     {
-        addMinute();
+        addTime( 60 );
     }
 
     @FXML
-    void handleBtnBreak( ActionEvent event )
+    void btnBreakOnAction( ActionEvent event )
     {
         setTimerToBreakTime();
         getControllerManager().flatMap( ctrlMgr -> ctrlMgr.getController( FullScreenController.class ) )
@@ -115,34 +99,20 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleBtnCtrlMainView( ActionEvent event )
-    {
-        setView( MainControllerViews.CTRL );
-    }
-
-    @FXML
-    void handleBtnHide( ActionEvent event )
-    {
-        mainWindow.setVisible( false );
-        mainWindowInvisibleBorder.setStyle( "-fx-border-color: rgba(254, 254, 254, 0.01)" );
-        mainWindowBounds = mainWindow.getBoundsInParent();
-    }
-
-    @FXML
-    void handleBtnQuit( ActionEvent event )
+    void btnCloseOnAction( ActionEvent event )
     {
         Platform.exit();
         System.exit( 0 );
     }
 
     @FXML
-    void handleBtnReset( ActionEvent event )
+    void btnRestartOnAction( ActionEvent event )
     {
         resetTimer();
     }
 
     @FXML
-    void handleBtnSettings( ActionEvent event )
+    void btnSettingsOnAction( ActionEvent event )
     {
         getControllerManager().ifPresent(
                 ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
@@ -155,7 +125,7 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleBtnStart( ActionEvent event )
+    void btnStartOnAction( ActionEvent event )
     {
         if( currentState == State.INIT )
         {
@@ -169,6 +139,53 @@ public class MainController extends Controller
         {
             startTimer();
         }
+    }
+
+    @FXML
+    void controlAreaGridPaneOnMouseDragged( MouseEvent event )
+    {
+        stageDraggingOnDragged( event );
+    }
+
+    @FXML
+    void controlAreaGridPaneOnMousePressed( MouseEvent event )
+    {
+        stageDraggingOnPressed( event );
+    }
+
+    @FXML
+    void controlAreaGridPaneOnMouseReleased( MouseEvent event )
+    {
+        stageDraggingOnReleased();
+    }
+
+    @FXML
+    void controlButtonTimerViewOnAction( ActionEvent event )
+    {
+        setView( MainStageViews.CONTROL );
+    }
+
+    @FXML
+    void controlButtonTimerViewOnMouseEntered( MouseEvent event )
+    {
+        setView( MainStageViews.CONTROL );
+    }
+
+    int getMinutes()
+    {
+        return remainingSeconds / 60;
+    }
+
+    int getSeconds()
+    {
+        return remainingSeconds % 60;
+    }
+
+    @FXML
+    void handleBtnHide( ActionEvent event )
+    {
+        containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
+        parentContainer.setVisible( false );
     }
 
     @FXML
@@ -198,15 +215,9 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleMouseEnteredBtnCtrlMainView( MouseEvent event )
-    {
-        setView( MainControllerViews.CTRL );
-    }
-
-    @FXML
     void handleOnMouseDraggedBtnCtrlCtrlView( MouseEvent event )
     {
-        double newX = event.getScreenX() - mainView.getBoundsInParent().getCenterX();
+        double newX = event.getScreenX() - timerView.getBoundsInParent().getCenterX();
 
         if( newX < 1440 && newX > 120 )
         {
@@ -215,19 +226,7 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleOnMouseDraggedCtrlBtnArea( MouseEvent event )
-    {
-        stageDraggingOnDragged( event );
-    }
-
-    @FXML
     void handleOnMousePressedBtnCtrlCtrlView( MouseEvent event )
-    {
-        stageDraggingOnPressed( event );
-    }
-
-    @FXML
-    void handleOnMousePressedCtrlBtnArea( MouseEvent event )
     {
         stageDraggingOnPressed( event );
     }
@@ -238,79 +237,58 @@ public class MainController extends Controller
         stageDraggingOnReleased();
     }
 
-    @FXML
-    void handleOnMouseReleasedCtrlBtnArea( MouseEvent event )
+    void initViewHoverListeners()
     {
-        stageDraggingOnReleased();
+        final InvalidationListener controlViewVisibilitySetter = event ->
+        {
+            if( stageDragging ) return;
+            if( ( controlButtonControlView.isHover() || controlAreaGridPane.isHover() ) )
+            {
+                setView( MainStageViews.CONTROL );
+            }
+            else if( remainingSeconds == Configs.getDefaultTimerDuration() )
+            {
+                btnTimerPlayBreak.setVisible( false );
+                setView( MainStageViews.TIMER_STOP );
+            }
+            else if( remainingSeconds > 0 )
+            {
+                setView( MainStageViews.TIMER );
+            }
+            else
+            {
+                btnTimerPlayBreak.setVisible( true );
+                setView( MainStageViews.TIMER_STOP );
+            }
+        };
+
+        controlButtonControlView.hoverProperty().addListener( controlViewVisibilitySetter );
+        controlAreaGridPane.hoverProperty().addListener( controlViewVisibilitySetter );
+
+        timerView.hoverProperty().addListener( e ->
+        {
+            if( timerView.isHover() && !controlButtonTimerView.isHover() )
+            {
+                containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
+                parentContainer.setVisible( false );
+            }
+        } );
+        containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
     }
+
 
     @FXML
     void initialize()
     {
-        playSound();
+        setView( MainStageViews.TIMER_STOP );
 
-        setView( MainControllerViews.TIMER_STOP );
         btnTimerPlayBreak.setVisible( false );
-
-        final InvalidationListener ctrlViewVisualizer = event ->
-        {
-            if( stageDragging ) return;
-            if( ( btnCtrlCtrlView.isHover() || gridPaneCtrlBtnArea.isHover() ) )
-            {
-                setView( MainControllerViews.CTRL );
-            }
-            else if( remainingSeconds == defaultTimerDuration )
-            {
-                btnTimerPlayBreak.setVisible( false );
-                setView( MainControllerViews.TIMER_STOP );
-            }
-            else if( remainingSeconds > 0 )
-            {
-                setView( MainControllerViews.MAIN );
-            }
-
-            else
-            {
-                btnTimerPlayBreak.setVisible( true );
-                setView( MainControllerViews.TIMER_STOP );
-            }
-        };
-        btnCtrlCtrlView.hoverProperty().addListener( ctrlViewVisualizer );
-        gridPaneCtrlBtnArea.hoverProperty().addListener( ctrlViewVisualizer );
-
-        mainWindow.setVisible( true );
-
-        mainWindowBounds = mainWindow.getBoundsInParent();
-        mainWindowInvisibleBorder.setStyle( "-fx-border-color: rgba(0,0,0,0.0)" );
-        mainView.hoverProperty().addListener( e ->
-        {
-            if( mainView.isHover() && !btnCtrlMainView.isHover() )
-            {
-                mainWindow.setVisible( false );
-                mainWindowInvisibleBorder.setStyle( "-fx-border-color: rgba(254, 254, 254, 0.01)" );
-                mainWindowBounds = mainWindow.getBoundsInParent();
-            }
-        } );
-        final EventHandler<MouseEvent> onMouseLeaveMainView = e ->
-        {
-            if( mainWindowBounds == null ) return;
-            if(
-                    e.getX() >= mainWindowBounds.getMinX() && e.getX() <= mainWindowBounds.getMaxX() && e.getY() >= mainWindowBounds.getMinY() && e.getY() <= mainWindowBounds.getMaxY()
-            )
-            {
-                System.out.println( "on view" );
-            }
-            else
-            {
-                mainWindow.setVisible( true );
-                mainWindowInvisibleBorder.setStyle( "-fx-border-color: rgba(0,0,0,0.0)" );
-            }
-        };
-        mainWindowInvisibleBorder.setOnMouseMoved( onMouseLeaveMainView );
-        mainWindowInvisibleBorder.setOnMouseEntered( onMouseLeaveMainView );
-        mainWindowInvisibleBorder.setOnMouseExited( onMouseLeaveMainView );
+        parentContainer.setVisible( true );
 
         resetTimer();
+        initViewHoverListeners();
+
+        afterInitialize();
     }
 
     void pauseTimer()
@@ -328,10 +306,10 @@ public class MainController extends Controller
             return;
         }
 
-        if( timer != null )
+        if( mainTimer != null )
         {
-            timer.cancel();
-            timer.purge();
+            mainTimer.cancel();
+            mainTimer.purge();
         }
         btnStart.getStyleClass().remove( "btn-pause" );
         btnStart.getStyleClass().add( "btn-start" );
@@ -355,6 +333,26 @@ public class MainController extends Controller
 
     void remainingSecondsSetter( int secs )
     {
+        Robot robot = new Robot();
+        System.out.println( "X " + robot.getMousePosition().getX() );
+        if( containerBoundsOnScreen != null )
+        {
+            Point2D e = robot.getMousePosition();
+            System.out.println( containerBoundsOnScreen );
+
+            if(
+                    e.getX() >= containerBoundsOnScreen.getMinX() && e.getX() <= containerBoundsOnScreen.getMaxX() && e.getY() >= containerBoundsOnScreen.getMinY() && e.getY() <= containerBoundsOnScreen.getMaxY()
+            )
+            {
+                System.out.println( "on view" );
+            }
+            else
+            {
+                parentContainer.setVisible( true );
+            }
+        }
+
+
         this.remainingSeconds = secs;
         String formattedTime;
         if( String.valueOf( getMinutes() ).length() <= 2 )
@@ -371,27 +369,27 @@ public class MainController extends Controller
         }
         System.out.println( "Set time to: " + formattedTime );
 
-        lblTimer.setText( formattedTime );
+        timeLabelTimerView.setText( formattedTime );
 
         getControllerManager().flatMap( ctrlMgr -> ctrlMgr.getController( FullScreenController.class ) )
-                              .ifPresent( ctrlr ->
+                              .ifPresent( controller ->
                               {
-                                  ctrlr.getLblTimer().setText( formattedTime );
-                                  ctrlr.updateBreakProgressBar(
-                                          ( double ) remainingSeconds / breakTimerDuration );
+                                  controller.getLblTimer().setText( formattedTime );
+                                  controller.updateBreakProgressBar(
+                                          ( double ) remainingSeconds / Configs.getBreakTimerDuration() );
                               } );
 
-        lblTimerSmall.setText( formattedTime );
+        timeLabelControlView.setText( formattedTime );
         if( secs == 0 )
         {
             playSound();
 
             getControllerManager()
                     .flatMap( ctrlMgr -> ctrlMgr.getController( NotifyFlashScreenController.class ) )
-                    .ifPresent( controller -> controller.flashRepeatedly( FLASH_NOTIFY_REPEAT_INTERVAL ) )
+                    .ifPresent( controller -> controller.flashRepeatedly( Configs.getFlashNotifyInterval() ) )
             ;
 
-            setView( MainControllerViews.TIMER_STOP );
+            setView( MainStageViews.TIMER_STOP );
             if( currentState == State.BREAK_RUNNING )
             {
                 currentState = State.BREAK_STOP;
@@ -407,53 +405,44 @@ public class MainController extends Controller
     public void resetTimer()
     {
         pauseTimer();
-        remainingSecondsSetter( defaultTimerDuration );
+        remainingSecondsSetter( Configs.getDefaultTimerDuration() );
     }
 
-    public void setBreakTimerDuration( int breakTimerDuration )
-    {
-        this.breakTimerDuration = breakTimerDuration;
-    }
-
-    public void setDefaultTimerDuration( int defaultTimerDuration )
-    {
-        this.defaultTimerDuration = defaultTimerDuration;
-    }
 
     public void setTagLabel( String text )
     {
         if( !text.isBlank() )
         {
             text = text.trim();
-            tagBtnCtrlView.setText( text );
-            tagBtnMainView.setText( text );
+            tagBtnControlView.setText( text );
+            tagBtnTimerView.setText( text );
         }
     }
 
     void setTimerToBreakTime()
     {
         pauseTimer();
-        remainingSecondsSetter( breakTimerDuration );
+        remainingSecondsSetter( Configs.getBreakTimerDuration() );
     }
 
-    public void setView( MainControllerViews view )
+    public void setView( MainStageViews view )
     {
-        if( view == MainControllerViews.MAIN )
+        if( view == MainStageViews.TIMER )
         {
-            mainView.setVisible( true );
-            ctrlView.setVisible( false );
+            timerView.setVisible( true );
+            controlView.setVisible( false );
             timerStopView.setVisible( false );
         }
-        else if( view == MainControllerViews.CTRL )
+        else if( view == MainStageViews.CONTROL )
         {
-            mainView.setVisible( false );
-            ctrlView.setVisible( true );
+            timerView.setVisible( false );
+            controlView.setVisible( true );
             timerStopView.setVisible( false );
         }
-        else if( view == MainControllerViews.TIMER_STOP )
+        else if( view == MainStageViews.TIMER_STOP )
         {
-            mainView.setVisible( true );
-            ctrlView.setVisible( false );
+            timerView.setVisible( true );
+            controlView.setVisible( false );
             timerStopView.setVisible( true );
         }
     }
@@ -462,15 +451,15 @@ public class MainController extends Controller
     {
         stageDragging = true;
 
-        getStage().setX( event.getScreenX() + xOffset );
-        getStage().setY( event.getScreenY() + yOffset );
+        getStage().setX( event.getScreenX() + stageDragOffsetX );
+        getStage().setY( event.getScreenY() + stageDragOffsetY );
     }
 
     void stageDraggingOnPressed( MouseEvent event )
     {
         stageDragging = true;
-        xOffset = getStage().getX() - event.getScreenX();
-        yOffset = getStage().getY() - event.getScreenY();
+        stageDragOffsetX = getStage().getX() - event.getScreenX();
+        stageDragOffsetY = getStage().getY() - event.getScreenY();
     }
 
     void stageDraggingOnReleased()
@@ -479,19 +468,19 @@ public class MainController extends Controller
         {
             return;
         }
-        else if( btnCtrlCtrlView.isHover() || gridPaneCtrlBtnArea.isHover() )
+        else if( controlButtonControlView.isHover() || controlAreaGridPane.isHover() )
         {
-            setView( MainControllerViews.CTRL );
+            setView( MainStageViews.CONTROL );
         }
         else
         {
             if( remainingSeconds >= 1 )
             {
-                setView( MainControllerViews.MAIN );
+                setView( MainStageViews.TIMER );
             }
             else
             {
-                setView( MainControllerViews.TIMER_STOP );
+                setView( MainStageViews.TIMER_STOP );
             }
         }
         stageDragging = false;
@@ -514,10 +503,10 @@ public class MainController extends Controller
             currentState = State.WORK_RUNNING;
         }
 
-        timer = new Timer();
-        timer.schedule( new CountdownTask( remainingSeconds, this::remainingSecondsSetter ), 0, 1000 );
+        mainTimer = new Timer();
+        mainTimer.schedule( new CountdownTask( remainingSeconds, this::remainingSecondsSetter ), 0, 1000 );
 
-        setView( MainControllerViews.MAIN );
+        setView( MainStageViews.TIMER );
 
         btnStart.getStyleClass().remove( "btn-start" );
         btnStart.getStyleClass().add( "btn-pause" );
@@ -544,9 +533,9 @@ public class MainController extends Controller
         }
     }
 
-    public enum MainControllerViews
+    public enum MainStageViews
     {
-        MAIN, CTRL, TIMER_STOP
+        TIMER, CONTROL, TIMER_STOP
     }
 
 }

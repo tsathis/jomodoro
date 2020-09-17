@@ -36,7 +36,7 @@ public class App extends Application
     private FullScreenController createFullscreenView() throws IOException
     {
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource( "/com/github/tharindusathis/jomodoro/view/full-screen-view.fxml" ) );
+                getClass().getResource( "/com/github/tharindusathis/jomodoro/view/fullscreen-stage.fxml" ) );
         Region contentRootRegion = loader.load();
 
         double origW = 1920;
@@ -73,11 +73,11 @@ public class App extends Application
     private MainController createMainView() throws IOException
     {
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource( "/com/github/tharindusathis/jomodoro/view/main-view.fxml" ) );
+                getClass().getResource( "/com/github/tharindusathis/jomodoro/view/main-stage.fxml" ) );
         Region contentRootRegion = loader.load();
 
-        double origW = 720.0 + 720;
-        double origH = 360.0 + 720;
+        double origW = 720.0;
+        double origH = 360.0;
 
         contentRootRegion.setPrefWidth( origW );
         contentRootRegion.setPrefHeight( origH );
@@ -114,7 +114,7 @@ public class App extends Application
     private NotifyFlashScreenController createNotifyFlashScreenView() throws IOException
     {
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource( "/com/github/tharindusathis/jomodoro/view/notify-flash-screen.fxml" ) );
+                getClass().getResource( "/com/github/tharindusathis/jomodoro/view/notify-flash-screen-stage.fxml" ) );
         Region contentRootRegion = loader.load();
 
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
