@@ -244,19 +244,22 @@ public class MainController extends Controller
     {
         final InvalidationListener controlViewVisibilitySetter = event ->
         {
+            System.out.println(currentState);
             if( stageDragging ) return;
-            if( ( controlButtonControlView.isHover() || controlAreaGridPane.isHover() ) )
+            if( controlButtonControlView.isHover() || controlAreaGridPane.isHover() )
             {
                 setView( MainStageViews.CONTROL );
             }
-            else if(currentState.isRunning() || remainingSeconds > 0)
+            else if(currentState.isRunning() && remainingSeconds > 0)
             {
                 setView( MainStageViews.TIMER );
             }
-            else
+            else if(!currentState.isRunning())
             {
                 btnTimerPlayBreak.setVisible( currentState == State.WORK_STOP );
                 setView( MainStageViews.TIMER_STOP );
+            }else{
+                setView( MainStageViews.TIMER );
             }
         };
 
