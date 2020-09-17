@@ -3,103 +3,64 @@ package com.github.tharindusathis.jomodoro.controller;
 import com.github.tharindusathis.jomodoro.timer.Configs;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 
 public class FullScreenController extends Controller
 {
     @FXML
-    private BorderPane txtTimeContainer;
+    private BorderPane breakView;
     @FXML
-    private BorderPane breakViewPane;
+    private BorderPane timerView;
     @FXML
-    private BorderPane startViewPane;
-    @FXML
-    private Button btnSpinnerTimeDown;
-    @FXML
-    private Button btnSpinnerTimeUp;
-    @FXML
-    private TextField txtTime;
+    private TextField timeTextBox;
     @FXML
     private Label lblTimer;
     @FXML
     private ProgressBar breakProgressBar;
     @FXML
-    private BorderPane txtBreakContainer;
+    private TextField breakTextBox;
     @FXML
-    private Button btnSpinnerBreakDown;
-    @FXML
-    private Button btnSpinnerBreakUp;
-    @FXML
-    private Button btnFinishBreak;
-    @FXML
-    private TextField txtBreak;
-    @FXML
-    private BorderPane txtLabelContainer;
-    @FXML
-    private TextField txtLabel;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private Button btnStart;
+    private TextField tagTextBox;
 
     @FXML
     void btnCloseOnAction( ActionEvent event )
     {
-        getControllerManager().ifPresent( controllerManager -> controllerManager.showView( ControllerManager.View.MAIN ) );
+        getControllerManager().ifPresent(
+                controllerManager -> controllerManager.showView( ControllerManager.View.MAIN ) );
     }
 
     @FXML
     void btnSpinnerBreakDownOnAction( ActionEvent event )
     {
-        System.out.println( event );
-        changeDurationValue( txtBreak, -1 );
+        changeDurationValue( breakTextBox, -1 );
     }
 
     @FXML
     void btnSpinnerBreakUpOnAction( ActionEvent event )
     {
-        changeDurationValue( txtBreak, 1 );
+        changeDurationValue( breakTextBox, 1 );
     }
 
     @FXML
     void btnSpinnerTimeDownOnAction( ActionEvent event )
     {
-        changeDurationValue( txtTime, -1 );
+        changeDurationValue( timeTextBox, -1 );
     }
 
     @FXML
     void btnSpinnerTimeUpOnAction( ActionEvent event )
     {
-        changeDurationValue( txtTime, 1 );
+        changeDurationValue( timeTextBox, 1 );
     }
 
     @FXML
     void btnStartOnAction( ActionEvent event )
     {
         startTimer();
-    }
-
-    private void startTimer()
-    {
-        getControllerManager()
-                .flatMap( controllerManager -> controllerManager.getController( MainController.class ) )
-                .ifPresent( mainController ->
-                {
-
-                    Configs.setDefaultTimerDuration( Integer.parseInt( txtTime.getText() ) * 60 );
-                    Configs.setBreakTimerDuration( Integer.parseInt( txtBreak.getText() ) * 60 );
-                    mainController.resetTimer();
-                    mainController.startTimer();
-                    mainController.setTagLabel( txtLabel.getText() );
-                    mainController.setView( MainController.MainStageViews.TIMER );
-                } );
-        getControllerManager().ifPresent( controllerManager -> controllerManager.showView( ControllerManager.View.MAIN ));
     }
 
     private void changeDurationValue( TextField textField, int i )
@@ -118,7 +79,6 @@ public class FullScreenController extends Controller
         {
             e.printStackTrace();
         }
-
     }
 
     public Label getLblTimer()
@@ -129,36 +89,38 @@ public class FullScreenController extends Controller
     @FXML
     void handleBtnFinishBreak( ActionEvent event )
     {
-        setView( FullscreenControllerView.START );
-        // TODO:
-        // ( ( MainController ) controllerManager.getController( ControllerManager.View.MAIN ) ).setCurrentState( MainController.State.BREAK_STOP );
-        // ( ( MainController ) controllerManager.getController( ControllerManager.View.MAIN ) ).resetTimer();
+        setView( FullscreenStageViews.START );
+        getControllerManager()
+                .flatMap( controllerManager -> controllerManager.getController( MainController.class ) )
+                .ifPresent( MainController::resetTimer );
     }
 
     @FXML
     void initialize()
     {
-        txtTime.textProperty().addListener( ( observable, oldValue, newValue ) ->
+        timeTextBox.textProperty().addListener( ( observable, oldValue, newValue ) ->
         {
             if( isInvalidDuration( newValue ) && !newValue.isEmpty() )
             {
-                txtTime.setText( oldValue );
+                timeTextBox.setText( oldValue );
             }
         } );
-        txtBreak.textProperty().addListener( ( observable, oldValue, newValue ) ->
+        breakTextBox.textProperty().addListener( ( observable, oldValue, newValue ) ->
         {
             if( isInvalidDuration( newValue ) && !newValue.isEmpty() )
             {
-                txtBreak.setText( oldValue );
+                breakTextBox.setText( oldValue );
             }
         } );
-        txtLabel.setOnKeyReleased( event -> {
-            if(event.getCode() == KeyCode.ENTER){
+        tagTextBox.setOnKeyReleased( event ->
+        {
+            if( event.getCode() == KeyCode.ENTER )
+            {
                 startTimer();
             }
         } );
-        txtTime.setText( "25" );
-        txtBreak.setText( "5" );
+        timeTextBox.setText( "25" );
+        breakTextBox.setText( "5" );
     }
 
     private boolean isInvalidDuration( String input )
@@ -174,24 +136,35 @@ public class FullScreenController extends Controller
         }
     }
 
-    public void setView( FullscreenControllerView view )
+    public void setView( FullscreenStageViews view )
     {
-        if( view == FullscreenControllerView.START )
+        if( view == FullscreenStageViews.START )
         {
-            startViewPane.setVisible( true );
-            breakViewPane.setVisible( false );
+            timerView.setVisible( true );
+            breakView.setVisible( false );
         }
-        else if( view == FullscreenControllerView.BREAK )
+        else if( view == FullscreenStageViews.BREAK )
         {
-            startViewPane.setVisible( false );
-            breakViewPane.setVisible( true );
+            timerView.setVisible( false );
+            breakView.setVisible( true );
         }
     }
 
-    @FXML
-    void txtTimeInputMethodTextChanged( InputMethodEvent event )
+    private void startTimer()
     {
-        System.out.println( event );
+        getControllerManager()
+                .flatMap( controllerManager -> controllerManager.getController( MainController.class ) )
+                .ifPresent( mainController ->
+                {
+                    Configs.setTimerDuration( Integer.parseInt( timeTextBox.getText() ) * 60 );
+                    Configs.setBreakTimerDuration( Integer.parseInt( breakTextBox.getText() ) * 60 );
+                    mainController.resetTimer();
+                    mainController.startTimer();
+                    mainController.setTagLabel( tagTextBox.getText() );
+                    mainController.setView( MainController.MainStageViews.TIMER );
+                } );
+        getControllerManager().ifPresent(
+                controllerManager -> controllerManager.showView( ControllerManager.View.MAIN ) );
     }
 
     public void updateBreakProgressBar( double value )
@@ -199,7 +172,7 @@ public class FullScreenController extends Controller
         breakProgressBar.setProgress( value );
     }
 
-    enum FullscreenControllerView
+    enum FullscreenStageViews
     {
         START, BREAK
     }

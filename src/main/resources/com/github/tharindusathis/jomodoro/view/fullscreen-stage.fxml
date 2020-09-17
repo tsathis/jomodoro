@@ -12,7 +12,7 @@
             fx:controller="com.github.tharindusathis.jomodoro.controller.FullScreenController">
    <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
               AnchorPane.topAnchor="0.0">
-      <BorderPane fx:id="startViewPane" prefHeight="467.0" prefWidth="686.0">
+      <BorderPane fx:id="timerView" prefHeight="467.0" prefWidth="686.0">
          <center>
             <VBox alignment="CENTER" prefHeight="513.0" prefWidth="749.0" spacing="30.0"
                   BorderPane.alignment="CENTER">
@@ -20,14 +20,14 @@
                   <Insets/>
                </BorderPane.margin>
                <HBox alignment="CENTER" spacing="30.0">
-                  <BorderPane fx:id="txtTimeContainer" prefHeight="200.0" prefWidth="200.0"
+                  <BorderPane prefHeight="200.0" prefWidth="200.0"
                               stylesheets="@../styles/fullscreen-stage.css">
                      <right>
                         <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="spinner-bg"
                                     stylesheets="@../styles/fullscreen-stage.css"
                                     BorderPane.alignment="CENTER_RIGHT">
                            <bottom>
-                              <Button fx:id="btnSpinnerTimeDown" mnemonicParsing="false"
+                              <Button mnemonicParsing="false"
                                       onAction="#btnSpinnerTimeDownOnAction"
                                       stylesheets="@../styles/fullscreen-stage.css"
                                       BorderPane.alignment="CENTER">
@@ -38,7 +38,7 @@
                               </Button>
                            </bottom>
                            <top>
-                              <Button fx:id="btnSpinnerTimeUp" contentDisplay="GRAPHIC_ONLY"
+                              <Button contentDisplay="GRAPHIC_ONLY"
                                       graphicTextGap="0.0" maxHeight="72.0" maxWidth="83.0"
                                       mnemonicParsing="false" onAction="#btnSpinnerTimeUpOnAction"
                                       prefHeight="72.0" prefWidth="83.0"
@@ -60,7 +60,7 @@
                         <String fx:value="txt-input-small"/>
                      </styleClass>
                      <center>
-                        <TextField fx:id="txtTime" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0"
+                        <TextField fx:id="timeTextBox" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0"
                                    styleClass="txt-input" stylesheets="@../styles/fullscreen-stage.css"
                                    text="999" BorderPane.alignment="CENTER">
                            <BorderPane.margin>
@@ -84,14 +84,14 @@
                         </Pane>
                      </left>
                   </BorderPane>
-                  <BorderPane fx:id="txtBreakContainer" layoutX="10.0" layoutY="10.0" prefHeight="200.0"
+                  <BorderPane layoutX="10.0" layoutY="10.0" prefHeight="200.0"
                               prefWidth="200.0" stylesheets="@../styles/fullscreen-stage.css">
                      <right>
                         <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="spinner-bg"
                                     stylesheets="@../styles/fullscreen-stage.css"
                                     BorderPane.alignment="CENTER_RIGHT">
                            <bottom>
-                              <Button fx:id="btnSpinnerBreakDown" mnemonicParsing="false"
+                              <Button mnemonicParsing="false"
                                       onAction="#btnSpinnerBreakDownOnAction"
                                       stylesheets="@../styles/fullscreen-stage.css"
                                       BorderPane.alignment="CENTER">
@@ -102,7 +102,7 @@
                               </Button>
                            </bottom>
                            <top>
-                              <Button fx:id="btnSpinnerBreakUp" contentDisplay="GRAPHIC_ONLY"
+                              <Button contentDisplay="GRAPHIC_ONLY"
                                       graphicTextGap="0.0" maxHeight="72.0" maxWidth="83.0"
                                       mnemonicParsing="false" onAction="#btnSpinnerBreakUpOnAction"
                                       prefHeight="72.0" prefWidth="83.0"
@@ -124,7 +124,7 @@
                         <String fx:value="txt-input-small"/>
                      </styleClass>
                      <center>
-                        <TextField fx:id="txtBreak" alignment="CENTER_RIGHT" prefHeight="80.0"
+                        <TextField fx:id="breakTextBox" alignment="CENTER_RIGHT" prefHeight="80.0"
                                    prefWidth="126.0" styleClass="txt-input"
                                    stylesheets="@../styles/fullscreen-stage.css" text="999"
                                    BorderPane.alignment="CENTER">
@@ -150,14 +150,14 @@
                      </left>
                   </BorderPane>
                </HBox>
-               <BorderPane fx:id="txtLabelContainer" prefHeight="200.0" prefWidth="200.0"
+               <BorderPane prefHeight="200.0" prefWidth="200.0"
                            stylesheets="@../styles/fullscreen-stage.css">
                   <styleClass>
                      <String fx:value="txt-input-bg"/>
                      <String fx:value="txt-input-large"/>
                   </styleClass>
                   <center>
-                     <TextField fx:id="txtLabel" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0"
+                     <TextField fx:id="tagTextBox" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0"
                                 promptText="task label..." styleClass="txt-input"
                                 stylesheets="@../styles/fullscreen-stage.css" BorderPane.alignment="CENTER">
                         <BorderPane.margin>
@@ -184,21 +184,21 @@
                   <VBox.margin>
                      <Insets top="70.0"/>
                   </VBox.margin>
-                  <Button fx:id="btnClose" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
                           onAction="#btnCloseOnAction" styleClass="btn-x-fullscreen"
                           stylesheets="@../styles/fullscreen-stage.css" text="X" textAlignment="CENTER">
                      <font>
                         <Font name="Cambria Bold" size="12.0"/>
                      </font>
                   </Button>
-                  <Button fx:id="btnStart" layoutX="280.0" layoutY="10.0" mnemonicParsing="false"
+                  <Button layoutX="280.0" layoutY="10.0" mnemonicParsing="false"
                           onAction="#btnStartOnAction" styleClass="btn-start-fullscreen"
                           stylesheets="@../styles/fullscreen-stage.css" text="Start"/>
                </HBox>
             </VBox>
          </center>
       </BorderPane>
-      <BorderPane fx:id="breakViewPane" layoutX="10.0" layoutY="10.0" prefHeight="467.0" prefWidth="686.0">
+      <BorderPane fx:id="breakView" layoutX="10.0" layoutY="10.0" prefHeight="467.0" prefWidth="686.0">
          <center>
             <VBox alignment="CENTER" prefHeight="513.0" prefWidth="749.0" spacing="30.0"
                   BorderPane.alignment="CENTER">
@@ -206,7 +206,7 @@
                   <Insets/>
                </BorderPane.margin>
                <HBox alignment="CENTER" spacing="30.0">
-                  <Pane cacheShape="false" prefHeight="200.0" prefWidth="200.0" styleClass="break-ghaphic"
+                  <Pane cacheShape="false" prefHeight="200.0" prefWidth="200.0" styleClass="break-graphic"
                         stylesheets="@../styles/fullscreen-stage.css"/>
                   <VBox>
                      <HBox.margin>
@@ -233,7 +233,7 @@
                         <Font name="Cambria Bold" size="12.0"/>
                      </font>
                   </Button>
-                  <Button fx:id="btnFinishBreak" layoutX="280.0" layoutY="10.0" mnemonicParsing="false"
+                  <Button layoutX="280.0" layoutY="10.0" mnemonicParsing="false"
                           onAction="#handleBtnFinishBreak" styleClass="btn-start-fullscreen"
                           stylesheets="@../styles/fullscreen-stage.css" text="Finish"/>
                </HBox>

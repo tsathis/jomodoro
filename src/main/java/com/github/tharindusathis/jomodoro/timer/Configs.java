@@ -2,18 +2,18 @@ package com.github.tharindusathis.jomodoro.timer;
 
 public final class Configs
 {
-    private static int defaultTimerDuration = 25 * 60;
+    private static int timerDuration = 25 * 60;
     private static int breakTimerDuration = 5 * 60;
     private static int flashNotifyInterval = 60;
 
-    public static int getDefaultTimerDuration()
+    public static int getTimerDuration()
     {
-        return defaultTimerDuration;
+        return timerDuration;
     }
 
-    public static void setDefaultTimerDuration( int defaultTimerDuration )
+    public static void setTimerDuration( int timerDuration )
     {
-        Configs.defaultTimerDuration = defaultTimerDuration;
+        Configs.timerDuration = timerDuration;
     }
 
     public static int getBreakTimerDuration()

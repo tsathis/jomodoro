@@ -21,7 +21,7 @@ import javafx.scene.robot.Robot;
 import java.util.Timer;
 
 import static com.github.tharindusathis.jomodoro.controller.ControllerManager.View;
-import static com.github.tharindusathis.jomodoro.controller.FullScreenController.FullscreenControllerView;
+import static com.github.tharindusathis.jomodoro.controller.FullScreenController.FullscreenStageViews;
 
 /**
  * Main controller class
@@ -33,7 +33,7 @@ public class MainController extends Controller
     State currentState = State.INIT;
 
     Timer mainTimer;
-    int remainingSeconds = Configs.getDefaultTimerDuration();
+    int remainingSeconds = Configs.getTimerDuration();
 
     double stageDragOffsetX;
     double stageDragOffsetY;
@@ -95,7 +95,7 @@ public class MainController extends Controller
     {
         setTimerToBreakTime();
         getControllerManager().flatMap( ctrlMgr -> ctrlMgr.getController( FullScreenController.class ) )
-                              .ifPresent( controller -> controller.setView( FullscreenControllerView.START ) );
+                              .ifPresent( controller -> controller.setView( FullscreenStageViews.START ) );
     }
 
     @FXML
@@ -118,7 +118,7 @@ public class MainController extends Controller
                 ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
                                   .ifPresent( controller ->
                                   {
-                                      controller.setView( FullscreenControllerView.START );
+                                      controller.setView( FullscreenStageViews.START );
                                       ctrlMgr.showView( View.FULLSCREEN );
                                   } )
         );
@@ -195,7 +195,7 @@ public class MainController extends Controller
         getControllerManager().ifPresent( ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
                                                             .ifPresent( controller ->
                                                             {
-                                                                controller.setView( FullscreenControllerView.START );
+                                                                controller.setView( FullscreenStageViews.START );
                                                                 ctrlMgr.showView( View.FULLSCREEN );
                                                             } ) );
     }
@@ -209,7 +209,7 @@ public class MainController extends Controller
         getControllerManager().ifPresent( ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
                                                             .ifPresent( controller ->
                                                             {
-                                                                controller.setView( FullscreenControllerView.BREAK );
+                                                                controller.setView( FullscreenStageViews.BREAK );
                                                                 ctrlMgr.showView( View.FULLSCREEN );
                                                             } ) );
     }
@@ -246,7 +246,7 @@ public class MainController extends Controller
             {
                 setView( MainStageViews.CONTROL );
             }
-            else if( remainingSeconds == Configs.getDefaultTimerDuration() )
+            else if( remainingSeconds == Configs.getTimerDuration() )
             {
                 btnTimerPlayBreak.setVisible( false );
                 setView( MainStageViews.TIMER_STOP );
@@ -405,7 +405,8 @@ public class MainController extends Controller
     public void resetTimer()
     {
         pauseTimer();
-        remainingSecondsSetter( Configs.getDefaultTimerDuration() );
+        currentState = State.INIT;
+        remainingSecondsSetter( Configs.getTimerDuration() );
     }
 
 
