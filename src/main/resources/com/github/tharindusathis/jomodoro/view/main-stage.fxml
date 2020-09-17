@@ -31,7 +31,7 @@
          <BorderPane prefHeight="200.0" prefWidth="200.0" stylesheets="@../styles/main-stage.css">
             <center>
                <AnchorPane styleClass="timer-stop-view-area" stylesheets="@../styles/main-stage.css" BorderPane.alignment="CENTER">
-                  <Button mnemonicParsing="false" onAction="#handleBtnHide" stylesheets="@../styles/main-stage.css" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="38.0">
+                  <Button mnemonicParsing="false" onAction="#btnHideOnAction" stylesheets="@../styles/main-stage.css" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="38.0">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -43,7 +43,7 @@
                         <Tooltip text="Hide Temporary" />
                      </tooltip>
                   </Button>
-                  <Button layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleBtnTimerPlay" stylesheets="@../styles/main-stage.css" AnchorPane.bottomAnchor="38.0" AnchorPane.rightAnchor="55.0" AnchorPane.topAnchor="38.0">
+                  <Button layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#btnTimerPlayOnAction" stylesheets="@../styles/main-stage.css" AnchorPane.bottomAnchor="38.0" AnchorPane.rightAnchor="55.0" AnchorPane.topAnchor="38.0">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>

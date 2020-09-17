@@ -2,6 +2,7 @@ package com.github.tharindusathis.jomodoro.controller;
 
 import com.github.tharindusathis.jomodoro.timer.Configs;
 import com.github.tharindusathis.jomodoro.timer.CountdownTask;
+import com.github.tharindusathis.jomodoro.util.Constants;
 import com.github.tharindusathis.jomodoro.util.Loggers;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -20,6 +21,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.robot.Robot;
 
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 
 import static com.github.tharindusathis.jomodoro.controller.ControllerManager.View;
@@ -185,14 +187,26 @@ public class MainController extends Controller
     }
 
     @FXML
-    void handleBtnHide( @SuppressWarnings( "unused" )  ActionEvent event )
+    void btnHideOnAction( @SuppressWarnings( "unused" )  ActionEvent event )
     {
         containerBoundsOnScreen = parentContainer.localToScreen( parentContainer.getBoundsInLocal() );
         parentContainer.setVisible( false );
+        new Timer().schedule( new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                Platform.runLater( ()->
+                {
+                    parentContainer.setVisible( true );
+                    this.cancel();
+                });
+            }
+        }, 60 * 1000L);
     }
 
     @FXML
-    void handleBtnTimerPlay( @SuppressWarnings( "unused" )  ActionEvent event )
+    void btnTimerPlayOnAction( @SuppressWarnings( "unused" )  ActionEvent event )
     {
         resetTimer();
         getControllerManager().ifPresent( ctrlMgr -> ctrlMgr.getController( FullScreenController.class )
@@ -220,9 +234,8 @@ public class MainController extends Controller
     @FXML
     void handleOnMouseDraggedBtnCtrlCtrlView( MouseEvent event )
     {
-        double newX = event.getScreenX() - timerView.getBoundsInParent().getCenterX();
-
-        if( newX < 1440 && newX > 120 )
+        double newX = event.getScreenX() - getStage().getX();
+        if( newX < Constants.MAIN_VIEW_MAX_WIDTH && newX > Constants.MAIN_VIEW_MIN_WIDTH )
         {
             getStage().setWidth( newX );
         }
@@ -244,7 +257,6 @@ public class MainController extends Controller
     {
         final InvalidationListener controlViewVisibilitySetter = event ->
         {
-            System.out.println(currentState);
             if( stageDragging ) return;
             if( controlButtonControlView.isHover() || controlAreaGridPane.isHover() )
             {
