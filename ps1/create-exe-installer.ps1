@@ -35,7 +35,12 @@ Set-Variable -Name JPACKAGE_ARGS -Value @(
     '--win-menu-group',
     """$PROJECT""",
     '--resource-dir',
-    'res'
+    'res',
+    '--license-file',
+    'LICENSE',
+    '--vendor',
+    'Tharindu Sathischandra',
+    '--win-dir-chooser',
     '--app-version',
     """$VERSION""",
     '--module-path',

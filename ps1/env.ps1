@@ -36,8 +36,8 @@ Set-Variable -Name PLATFORM -Value win
 #
 # Application specific variables
 #
-Set-Variable -Name PROJECT -Value jomodoro
-Set-Variable -Name VERSION -Value "0.1.0"
+Set-Variable -Name PROJECT -Value Jomodoro
+Set-Variable -Name VERSION -Value "0.1.1"
 Set-Variable -Name MAINMODULE -Value com.github.tharindusathis
 Set-Variable -Name MAINCLASS -Value com.github.tharindusathis.jomodoro.App
 Set-Variable -Name MAINJAR -Value $PROJECT-$VERSION.jar
