@@ -303,9 +303,10 @@ public class MainController extends Controller
     {
         try
         {
-            String fontPath = Paths.get("src/main/resources/fonts/webdings.ttf").toUri().toURL().toString();
+            String fontPath = Paths.get("src/main/resources/fonts/Roboto-Medium.ttf").toUri().toURL().toString();
             System.out.println(fontPath);
             timeLabelTimerView.setFont( Font.loadFont( fontPath, 250.0 ) );
+            timeLabelControlView.setFont( Font.loadFont( fontPath, 87.0 ) );
         }catch(Exception e){
             e.printStackTrace();
         }

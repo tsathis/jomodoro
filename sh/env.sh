@@ -7,7 +7,7 @@
 # MacOS example
 #export JAVA_HOME="~/IDE/jdk-15.jdk/Contents/Home"
 # Linux Example
-#export JAVA_HOME="~/jdk-15"
+export JAVA_HOME="/lib/jvm/java-14-openjdk-amd64/"
 
 #
 # Until the jpackage module API is formalized, each JDK release (starting with
@@ -50,10 +50,10 @@ esac
 #
 # Application specific variables
 #
-PROJECT=SocketClientFX
-VERSION=15.0
-MAINMODULE=socketclientfx
-MAINCLASS=com.jtconnors.socketclientfx.SocketClientFX
+PROJECT=jomodoro
+VERSION=0.1.0
+MAINMODULE=com.github.tharindusathis
+MAINCLASS=com.github.tharindusathis.jomodoro.App
 MAINJAR=$PROJECT-$VERSION.jar
 INSTALLERNAME=$PROJECT-$VERSION
 LAUNCHER=$PROJECT
