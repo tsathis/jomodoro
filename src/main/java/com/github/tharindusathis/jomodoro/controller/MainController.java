@@ -20,8 +20,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.robot.Robot;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+import java.nio.file.Paths;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -299,6 +301,15 @@ public class MainController extends Controller
     @FXML
     void initialize()
     {
+        try
+        {
+            String fontPath = Paths.get("src/main/resources/fonts/webdings.ttf").toUri().toURL().toString();
+            System.out.println(fontPath);
+            timeLabelTimerView.setFont( Font.loadFont( fontPath, 250.0 ) );
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
         setView( MainStageViews.TIMER_STOP );
 
         btnTimerPlayBreak.setVisible( false );

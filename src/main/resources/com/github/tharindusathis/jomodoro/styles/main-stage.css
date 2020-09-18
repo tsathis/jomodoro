@@ -210,7 +210,7 @@
     -fx-padding: 0;
 }
 .time-label-control-view{
-    -fx-text-fill: black;
+    -fx-text-fill: white;
     -fx-font-size: 87;
     -fx-padding: 0;
 }
