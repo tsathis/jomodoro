@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 .main-window-container{
     -fx-max-width: 1440;
     -fx-max-height: 1080;
@@ -202,17 +204,17 @@
     -fx-padding: 0 10 0 10;
 }
 
-
-
 .timer-label-timer-view{
     -fx-text-fill: white;
-    /*-fx-font-size: 259;*/
+    -fx-font-size: 250;
     -fx-padding: 0;
+    -fx-font-family: 'Roboto';
 }
 .time-label-control-view{
-    -fx-text-fill: black;
+    -fx-text-fill: white;
     -fx-font-size: 87;
     -fx-padding: 0;
+    -fx-font-family: 'Roboto';
 }
 
 .control-area-stack-pane{
