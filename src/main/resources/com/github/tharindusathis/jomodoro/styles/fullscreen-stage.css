@@ -130,6 +130,7 @@
 
 .lbl-timer {
     -fx-text-fill: rgba(115,214,148,1.0);
+    -fx-font-size: 180;
 }
 
 

@@ -4,6 +4,7 @@ import com.github.tharindusathis.jomodoro.timer.Configs;
 import com.github.tharindusathis.jomodoro.timer.CountdownTask;
 import com.github.tharindusathis.jomodoro.util.Constants;
 import com.github.tharindusathis.jomodoro.util.Loggers;
+import com.github.tharindusathis.jomodoro.util.Resources;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -90,6 +91,18 @@ public class MainController extends Controller
     void afterInitialize()
     {
         playSound();
+        try
+        {
+            Resources.getFont( Resources.CustomFont.ROBOTO_250 )
+                     .ifPresent( font -> timeLabelTimerView.setFont( font ));
+
+            Resources.getFont( Resources.CustomFont.ROBOTO_87 )
+                     .ifPresent( font -> timeLabelControlView.setFont( font ) );
+        }
+        catch( Exception e )
+        {
+            Loggers.COMMON_LOGGER.log(Level.WARNING, "Error Setting Fonts");
+        }
     }
 
     @FXML
@@ -269,7 +282,7 @@ public class MainController extends Controller
             {
                 setView( MainStageViews.TIMER );
             }
-            else if( !currentState.isRunning() )
+            else if( !currentState.isRunning() && remainingSeconds == 0)
             {
                 btnTimerPlayBreak.setVisible( currentState == State.WORK_STOP );
                 setView( MainStageViews.TIMER_STOP );
@@ -556,6 +569,9 @@ public class MainController extends Controller
 
         btnStart.getStyleClass().remove( "btn-start" );
         btnStart.getStyleClass().add( "btn-pause" );
+
+        getControllerManager().flatMap( controllerManager -> controllerManager.getController( NotifyFlashScreenController.class ) )
+                              .ifPresent( NotifyFlashScreenController::flashReset );
 
         /* TODO: check whether this if this code needed: `setView( MainStageViews.TIMER );` */
     }

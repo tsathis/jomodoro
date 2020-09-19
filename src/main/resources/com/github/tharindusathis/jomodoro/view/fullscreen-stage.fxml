@@ -60,15 +60,12 @@
                         <String fx:value="txt-input-small"/>
                      </styleClass>
                      <center>
-                        <TextField fx:id="timeTextBox" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0"
+                        <TextField fx:id="timeTextBox"  alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0"
                                    styleClass="txt-input" stylesheets="@../styles/fullscreen-stage.css"
                                    text="999" BorderPane.alignment="CENTER">
                            <BorderPane.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                            </BorderPane.margin>
-                           <font>
-                              <Font name="Webdings" size="17.0"/>
-                           </font>
                         </TextField>
                      </center>
                      <left>
@@ -131,9 +128,6 @@
                            <BorderPane.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                            </BorderPane.margin>
-                           <font>
-                              <Font name="Webdings" size="17.0"/>
-                           </font>
                         </TextField>
                      </center>
                      <left>
@@ -158,14 +152,11 @@
                   </styleClass>
                   <center>
                      <TextField fx:id="tagTextBox" alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="126.0"
-                                promptText="task label..." styleClass="txt-input"
+                                promptText="I will focus on ..." styleClass="txt-input"
                                 stylesheets="@../styles/fullscreen-stage.css" BorderPane.alignment="CENTER">
                         <BorderPane.margin>
                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                         </BorderPane.margin>
-                        <font>
-                           <Font name="Webdings" size="17.0"/>
-                        </font>
                      </TextField>
                   </center>
                   <left>
@@ -214,9 +205,6 @@
                      </HBox.margin>
                      <Label fx:id="lblTimer" styleClass="lbl-timer"
                             stylesheets="@../styles/fullscreen-stage.css" text="00:00">
-                        <font>
-                           <Font name="Webdings" size="180.0"/>
-                        </font>
                      </Label>
                      <ProgressBar fx:id="breakProgressBar" prefHeight="18.0" prefWidth="456.0"
                                   progress="0.0"/>

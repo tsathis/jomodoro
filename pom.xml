@@ -127,6 +127,19 @@
                     </additionalClasspathElements>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.4</version>
+                <configuration>
+                    <mainClass>com.github.tharindusathis.jomodoro.App</mainClass>
+                    <launcher>launch</launcher>
+                    <compress>2</compress>
+                    <jlinkZipName>jomodoro-timer</jlinkZipName>
+                    <noManPages>true</noManPages>
+                    <noHeaderFiles>true</noHeaderFiles>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

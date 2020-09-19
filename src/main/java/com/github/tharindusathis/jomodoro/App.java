@@ -4,6 +4,8 @@ import com.github.tharindusathis.jomodoro.controller.ControllerManager;
 import com.github.tharindusathis.jomodoro.controller.FullScreenController;
 import com.github.tharindusathis.jomodoro.controller.MainController;
 import com.github.tharindusathis.jomodoro.controller.NotifyFlashScreenController;
+import com.github.tharindusathis.jomodoro.util.Loggers;
+import com.github.tharindusathis.jomodoro.util.Resources;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXMLLoader;
@@ -13,20 +15,23 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 /**
  * @author tharindusathis
  */
 public class App extends Application
 {
+    private static final double INIT_UI_SCALE_FACTOR = .4;
     private Stage mainViewStage;
     private Stage fullscreenViewStage;
-    private static final double INIT_UI_SCALE_FACTOR = .4;
+    private Stage notifyFlashScreenStage;
 
     public static void main( String[] args )
     {
@@ -89,12 +94,12 @@ public class App extends Application
         Scene scene = new Scene( rootPane, origW, origH );
 
         // bind the scene's width and height to the scaling parameters on the group
-        DoubleBinding width = scene.widthProperty().divide( origW );    
+        DoubleBinding width = scene.widthProperty().divide( origW );
         group.scaleXProperty().bind( width );
         group.scaleYProperty().bind( width );
 
         mainViewStage = new Stage();
-        mainViewStage.initOwner(getUtilityStage());
+        mainViewStage.initOwner( getUtilityStage() );
         mainViewStage.initStyle( StageStyle.TRANSPARENT );
         scene.setFill( Color.TRANSPARENT );
         mainViewStage.setScene( scene );
@@ -110,7 +115,6 @@ public class App extends Application
         return loader.getController();
     }
 
-    private Stage notifyFlashScreenStage;
     private NotifyFlashScreenController createNotifyFlashScreenView() throws IOException
     {
         FXMLLoader loader = new FXMLLoader(
@@ -134,9 +138,37 @@ public class App extends Application
         return loader.getController();
     }
 
+    /**
+     * Get a utility styled stage.
+     *
+     * @return Utility styled stage
+     */
+    private Stage getUtilityStage()
+    {
+        Stage utilityStage = new Stage();
+        utilityStage.initStyle( StageStyle.UTILITY );
+        utilityStage.setOpacity( 0 );
+        utilityStage.setHeight( 0 );
+        utilityStage.setWidth( 0 );
+        utilityStage.show();
+        return utilityStage;
+    }
+
     @Override
     public void start( Stage stage )
     {
+        try
+        {
+            String fontRobotoPath = getClass().getResource( "/com/github/tharindusathis/jomodoro/fonts/Roboto-Medium.ttf" )
+                                              .toExternalForm();
+            Resources.addFont( Resources.CustomFont.ROBOTO_250, Font.loadFont( fontRobotoPath , 250 ) );
+            Resources.addFont( Resources.CustomFont.ROBOTO_87, Font.loadFont( fontRobotoPath, 87 ) );
+        }
+        catch( Exception e )
+        {
+            Loggers.COMMON_LOGGER.log( Level.SEVERE, e::getMessage );
+        }
+
         MainController mainController = null;
         FullScreenController fullscreenController = null;
         NotifyFlashScreenController notifyFlashScreenController = null;
@@ -148,7 +180,7 @@ public class App extends Application
         }
         catch( IOException e )
         {
-            e.printStackTrace();
+            Loggers.COMMON_LOGGER.log( Level.SEVERE, e::getMessage );
         }
 
         final ControllerManager controllerManager = new ControllerManager();
@@ -160,22 +192,6 @@ public class App extends Application
                 ControllerManager.View.NOTIFY_FLASH, notifyFlashScreenController, notifyFlashScreenStage );
 
         mainViewStage.show();
-
-    }
-
-    /**
-     * Get a utility styled stage.
-     *
-     * @return Utility styled stage
-     */
-    private Stage getUtilityStage(){
-        Stage utilityStage = new Stage();
-        utilityStage.initStyle(StageStyle.UTILITY);
-        utilityStage.setOpacity(0);
-        utilityStage.setHeight(0);
-        utilityStage.setWidth(0);
-        utilityStage.show();
-        return utilityStage;
     }
 
 
