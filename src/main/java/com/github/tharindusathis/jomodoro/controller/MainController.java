@@ -50,6 +50,7 @@ public class MainController extends Controller
     Robot robot = new Robot();
     FadeTransition fadeOutParentContainer;
     FadeTransition fadeInParentContainer;
+    FadeTransition blinkNotifyTransition;
     @FXML
     private StackPane parentContainer;
     @FXML
@@ -406,10 +407,7 @@ public class MainController extends Controller
         {
             playSound();
 
-            getControllerManager()
-                    .flatMap( ctrlMgr -> ctrlMgr.getController( NotifyFlashScreenController.class ) )
-                    .ifPresent( controller -> controller.flashRepeatedly( Configs.getFlashNotifyInterval() ) )
-            ;
+            notifyBlinkRunRepeatedly( Configs.getFlashNotifyInterval() );
 
             setView( MainStageViews.TIMER_STOP );
             if( currentState == State.BREAK_RUNNING )
@@ -462,6 +460,41 @@ public class MainController extends Controller
             timerStopView.setVisible( false );
         }
         Loggers.COMMON_LOGGER.log( Level.FINE, () -> "Set view: " + view.name() );
+    }
+    Timer notifyBlinkTimer = new Timer();
+    private void notifyBlinkRunRepeatedly(int seconds){
+        notifyBlinkReset();
+        notifyBlinkTimer = new Timer();
+        notifyBlinkTimer.scheduleAtFixedRate(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                Platform.runLater(() -> notifyBlinkParentContainer());
+            }
+        }, 0, seconds * 1000L );
+    }
+    private void notifyBlinkReset(){
+        if( notifyBlinkTimer != null )
+        {
+            notifyBlinkTimer.purge();
+            notifyBlinkTimer.cancel();
+        }
+}
+
+    private void notifyBlinkParentContainer(){
+        if(blinkNotifyTransition == null) {
+            blinkNotifyTransition = new FadeTransition();
+            blinkNotifyTransition.setDuration(Duration.millis(250));
+            blinkNotifyTransition.setCycleCount(4);
+            blinkNotifyTransition.setAutoReverse( true );
+            blinkNotifyTransition.setNode(parentContainer);
+        }
+        if(blinkNotifyTransition != null) {
+            blinkNotifyTransition.setFromValue(1);
+            blinkNotifyTransition.setToValue(0);
+            blinkNotifyTransition.play();
+        }
     }
 
     private void setVisibilityParentContainer( boolean visible )
@@ -549,10 +582,7 @@ public class MainController extends Controller
 
     public void startTimer()
     {
-        getControllerManager()
-                .flatMap( ctrlMgr -> ctrlMgr.getController( NotifyFlashScreenController.class ) )
-                .ifPresent( NotifyFlashScreenController::flashReset )
-        ;
+        notifyBlinkReset();
 
         if( currentState == State.BREAK_STOP )
         {
@@ -570,8 +600,7 @@ public class MainController extends Controller
         btnStart.getStyleClass().remove( "btn-start" );
         btnStart.getStyleClass().add( "btn-pause" );
 
-        getControllerManager().flatMap( controllerManager -> controllerManager.getController( NotifyFlashScreenController.class ) )
-                              .ifPresent( NotifyFlashScreenController::flashReset );
+        notifyBlinkReset();
 
         /* TODO: check whether this if this code needed: `setView( MainStageViews.TIMER );` */
     }

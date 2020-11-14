@@ -3,20 +3,17 @@ package com.github.tharindusathis.jomodoro;
 import com.github.tharindusathis.jomodoro.controller.ControllerManager;
 import com.github.tharindusathis.jomodoro.controller.FullScreenController;
 import com.github.tharindusathis.jomodoro.controller.MainController;
-import com.github.tharindusathis.jomodoro.controller.NotifyFlashScreenController;
 import com.github.tharindusathis.jomodoro.util.Loggers;
 import com.github.tharindusathis.jomodoro.util.Resources;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -31,7 +28,6 @@ public class App extends Application
     private static final double INIT_UI_SCALE_FACTOR = .4;
     private Stage mainViewStage;
     private Stage fullscreenViewStage;
-    private Stage notifyFlashScreenStage;
 
     public static void main( String[] args )
     {
@@ -115,28 +111,6 @@ public class App extends Application
         return loader.getController();
     }
 
-    private NotifyFlashScreenController createNotifyFlashScreenView() throws IOException
-    {
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource( "/com/github/tharindusathis/jomodoro/view/notify-flash-screen-stage.fxml" ) );
-        Region contentRootRegion = loader.load();
-
-        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-        contentRootRegion.setPrefWidth( screenBounds.getWidth() );
-        contentRootRegion.setPrefHeight( screenBounds.getHeight() );
-        contentRootRegion.setMouseTransparent( true );
-        contentRootRegion.setPickOnBounds( false );
-
-        notifyFlashScreenStage = new Stage();
-        notifyFlashScreenStage.initOwner( getUtilityStage() );
-        notifyFlashScreenStage.initStyle( StageStyle.TRANSPARENT );
-        Scene scene = new Scene( contentRootRegion, screenBounds.getWidth(), screenBounds.getHeight() );
-        contentRootRegion.setStyle( "-fx-background-color: rgba(0,0,0,0.0)" );
-        scene.setFill( Color.TRANSPARENT );
-        notifyFlashScreenStage.setScene( scene );
-        notifyFlashScreenStage.setAlwaysOnTop( true );
-        return loader.getController();
-    }
 
     /**
      * Get a utility styled stage.
@@ -171,12 +145,10 @@ public class App extends Application
 
         MainController mainController = null;
         FullScreenController fullscreenController = null;
-        NotifyFlashScreenController notifyFlashScreenController = null;
         try
         {
             mainController = createMainView();
             fullscreenController = createFullscreenView();
-            notifyFlashScreenController = createNotifyFlashScreenView();
         }
         catch( IOException e )
         {
@@ -188,8 +160,6 @@ public class App extends Application
                 ControllerManager.View.MAIN, mainController, mainViewStage );
         controllerManager.registerController(
                 ControllerManager.View.FULLSCREEN, fullscreenController, fullscreenViewStage );
-        controllerManager.registerController(
-                ControllerManager.View.NOTIFY_FLASH, notifyFlashScreenController, notifyFlashScreenStage );
 
         mainViewStage.show();
     }

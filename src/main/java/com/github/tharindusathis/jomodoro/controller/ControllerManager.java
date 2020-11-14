@@ -57,7 +57,6 @@ public class ControllerManager
     {
         MAIN,
         FULLSCREEN,
-        TRAY_MENU,
-        NOTIFY_FLASH
+        TRAY_MENU
     }
 }
