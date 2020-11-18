@@ -121,10 +121,9 @@ public class App extends Application
     {
         Stage utilityStage = new Stage();
         utilityStage.initStyle( StageStyle.UTILITY );
-        utilityStage.setOpacity( 0 );
         utilityStage.setHeight( 0 );
         utilityStage.setWidth( 0 );
-        utilityStage.show();
+        utilityStage.hide();
         return utilityStage;
     }
 
